@@ -1,0 +1,79 @@
+<?xml version="1.0" encoding="utf-8"?>
+<s:SkinnableContainer xmlns:fx="http://ns.adobe.com/mxml/2009" 
+					  xmlns:s="library://ns.adobe.com/flex/spark" 
+					  xmlns:mx="library://ns.adobe.com/flex/mx"
+					  skinClass="skins.NormalToolbarSkin" xmlns:components="components.*"
+					  width="100%"
+					 >
+	<fx:Script>
+		<![CDATA[
+			import events.PropertyPanelEvent;
+			
+			import knowledgeMapEditor.controlIcons.icon_share_del;
+			import knowledgeMapEditor.controlIcons.icon_share_del_over;
+			import knowledgeMapEditor.controlIcons.icon_share_duplicate;
+			import knowledgeMapEditor.controlIcons.icon_share_duplicate_over;
+			import knowledgeMapEditor.controlIcons.icon_share_group;
+			import knowledgeMapEditor.controlIcons.icon_share_group_break;
+			import knowledgeMapEditor.controlIcons.icon_share_group_break_over;
+			import knowledgeMapEditor.controlIcons.icon_share_group_over;
+			import knowledgeMapEditor.controlIcons.icon_share_push_down;
+			import knowledgeMapEditor.controlIcons.icon_share_push_down_over;
+			import knowledgeMapEditor.controlIcons.icon_share_push_up;
+			import knowledgeMapEditor.controlIcons.icon_share_push_up_over;
+			import knowledgeMapEditor.controlIcons.icon_share_web;
+			import knowledgeMapEditor.controlIcons.icon_share_web_over;
+			
+			protected function duplicateHandler(event:MouseEvent):void
+			{
+				this.dispatchEvent(new PropertyPanelEvent(PropertyPanelEvent.NORMAL_DUPLICATE));
+			}
+			
+			protected function deleteHandler(event:MouseEvent):void
+			{
+				this.dispatchEvent(new PropertyPanelEvent(PropertyPanelEvent.NORMAL_DELETE));
+			}
+			
+			protected function pushUpHandler(event:MouseEvent):void
+			{
+				this.dispatchEvent(new PropertyPanelEvent(PropertyPanelEvent.NORMAL_TOP_LAYER));
+			}
+			
+			protected function pushDownHandler(event:MouseEvent):void
+			{
+				this.dispatchEvent(new PropertyPanelEvent(PropertyPanelEvent.NORMAL_BOTTOM_LAYER));
+			}
+			
+			protected function groupHandler(event:MouseEvent):void
+			{
+				this.dispatchEvent(new PropertyPanelEvent(PropertyPanelEvent.NORMAL_GROUP));
+			}
+			
+			protected function unGroupHandler(event:MouseEvent):void
+			{
+				this.dispatchEvent(new PropertyPanelEvent(PropertyPanelEvent.NORMAL_UNGROUP));
+			}
+			
+			protected function extensionHandler(event:MouseEvent):void
+			{
+				this.dispatchEvent(new PropertyPanelEvent(PropertyPanelEvent.NORMAL_EXTENSION));
+			}
+			
+		]]>
+	</fx:Script>
+	<fx:Declarations>
+		<!-- 将非可视元素（例如服务、值对象）放在此处 -->
+	</fx:Declarations>
+	<s:VGroup horizontalAlign="center" >
+		<s:HGroup gap="4" >
+			<components:ToolbarButton id="duplicateBtn" toolTip="快速复制(Ctrl+F)" image="{icon_share_duplicate}" overImage="{icon_share_duplicate_over}" click="duplicateHandler(event)" enabled="false"/>
+			<components:ToolbarButton id="deleteBtn" toolTip="删除(Del)" image="{icon_share_del}" overImage="{icon_share_del_over}" click="deleteHandler(event)"/>
+			<components:ToolbarButton id="topLayerBtn" toolTip="移至最上层" image="{icon_share_push_up}" overImage="{icon_share_push_up_over}" click="pushUpHandler(event)" enabled="false"/>
+			<components:ToolbarButton id="bottomLayerBtn" toolTip="移至最下层" image="{icon_share_push_down}" overImage="{icon_share_push_down_over}" click="pushDownHandler(event)" enabled="false"/>
+			<components:ToolbarButton id="groupBtn" toolTip="组合(Ctrl+G)" image="{icon_share_group}" overImage="{icon_share_group_over}" click="groupHandler(event)" enabled="false"/>
+			<components:ToolbarButton id="unGroupBtn" toolTip="分解(Ctrl+Shift+G)" image="{icon_share_group_break}" overImage="{icon_share_group_break_over}" click="unGroupHandler(event)" enabled="false"/>
+			<components:ToolbarButton id="extensionBtn" toolTip="扩展" image="{icon_share_web}" overImage="{icon_share_web_over}" click="extensionHandler(event)" enabled="false"/>
+		</s:HGroup>
+	</s:VGroup>
+	
+</s:SkinnableContainer>

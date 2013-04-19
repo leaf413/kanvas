@@ -1,0 +1,89 @@
+<?xml version="1.0" encoding="utf-8"?>
+<s:Group xmlns:fx="http://ns.adobe.com/mxml/2009" 
+		 xmlns:s="library://ns.adobe.com/flex/spark" 
+		 xmlns:mx="library://ns.adobe.com/flex/mx" xmlns:components="components.*" creationComplete="group1_creationCompleteHandler(event)">
+	<fx:Declarations>
+		<!-- Place non-visual elements (e.g., services, value objects) here -->
+	</fx:Declarations>
+	
+	<fx:Metadata>
+		[Event(name="changeArrowMapper", type="events.ShapeMapperEvent")]
+		
+	</fx:Metadata>
+	
+	<s:states>
+		<s:State name="normal" />
+		<s:State name="over" />
+	</s:states>
+	
+	
+	<s:currentState>normal</s:currentState>
+	
+	<fx:Script>
+		<![CDATA[
+			import events.ShapeMapperEvent;
+			
+			import knowledgeMapEditor.controlIcons.*;
+			
+			import mx.events.FlexEvent;
+			
+			import spark.filters.GlowFilter;
+			
+			[Bindable]
+			public var leftArrow:Boolean = false;
+			
+			[Bindable]
+			public var rightArrow:Boolean = false;
+			
+			[Bindable]
+			private var _overFilters:Array = [new GlowFilter(0x0066ff, 0.6, 5, 5, 3, 3)];
+			
+			private function group1_creationCompleteHandler(event:FlexEvent):void
+			{
+				addEventListener(MouseEvent.MOUSE_OVER, _mouseEventHandler, false, 0, true);
+				addEventListener(MouseEvent.MOUSE_OUT, _mouseEventHandler, false, 0, true);
+				lbtn.addEventListener(MouseEvent.CLICK, _btnHandler, false, 0, true);
+				rbtn.addEventListener(MouseEvent.CLICK, _btnHandler, false, 0, true);
+			}
+			
+			private function _mouseEventHandler(event:MouseEvent):void
+			{
+				switch(event.type){
+					case MouseEvent.MOUSE_OVER:
+						currentState = 'over';
+						break;
+					case MouseEvent.MOUSE_OUT:
+						currentState = 'normal';
+						break;
+				}
+			}
+			
+			private function _btnHandler(event:MouseEvent):void
+			{
+				
+				switch(event.currentTarget){
+					case lbtn:
+						_toggleBtn(lbtn);
+						break;
+					case rbtn:
+						_toggleBtn(rbtn);
+						break;
+				}
+				dispatchEvent(new ShapeMapperEvent(ShapeMapperEvent.CHANGE_ARROW_MAPPER,true));
+			}
+			
+			private function _toggleBtn(btn:IconButton):void{
+				btn.selected = !btn.selected;
+				btn.setStyle('overImage', btn.selected ? linestyle_arrow_selected : linestyle_arrow);
+			}
+		]]>
+	</fx:Script>
+	
+	<components:IconButton id="lbtn" selected="@{leftArrow}" image="{linestyle_arrow}" overImage="{linestyle_arrow}" downImage="{linestyle_arrow}" selectedImage="{linestyle_arrow_selected}" filters.over="{lbtn.selected ? _overFilters : []}"/>
+	<s:Rect height="2" left="12" right="12" verticalCenter="0" filters.over="{_overFilters}">
+		<s:fill>
+			<s:SolidColor color="0x258ce9"/>
+		</s:fill>
+	</s:Rect>
+	<components:IconButton id="rbtn" selected="@{rightArrow}" image="{linestyle_arrow}" overImage="{linestyle_arrow}" downImage="{linestyle_arrow}" selectedImage="{linestyle_arrow_selected}" scaleX="-1" right="0" filters.over="{rbtn.selected ? _overFilters : []}"/>
+</s:Group>

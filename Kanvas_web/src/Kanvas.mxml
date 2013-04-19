@@ -1,0 +1,759 @@
+<?xml version="1.0" encoding="utf-8"?>
+<s:Application xmlns:fx="http://ns.adobe.com/mxml/2009"
+			   xmlns:s="library://ns.adobe.com/flex/spark"
+			   xmlns:mx="library://ns.adobe.com/flex/mx"
+			   xmlns:panels="panels.*"
+			   xmlns:components="components.*"
+			   width="100%" height="100%" minWidth="700" minHeight="400" addedToStage="init()"
+			   backgroundColor="0x646464">
+	<fx:Declarations>
+		<!-- 将非可视元素（例如服务、值对象）放在此处 -->
+	</fx:Declarations>
+	<fx:Script>
+		<![CDATA[
+			import controller.event.CanvasEvent;
+			import controller.event.ElementEvent;
+			import controller.event.KeyboardEvent;
+			
+			import events.ConnectorPanelEvent;
+			import events.ExportPanelEvent;
+			import events.InsertPanelEvent;
+			import events.PropertyPanelEvent;
+			import events.ScaleControlEvent;
+			import events.ShapePanelEvent;
+			import events.TextFormatChangedEvent;
+			import events.ToolBarEvent;
+			
+			import model.vo.LineVO;
+			import model.vo.TextVO;
+			
+			import mx.events.FlexEvent;
+			import mx.events.StateChangeEvent;
+			
+			import panels.PanelBase;
+			
+			import util.Draw.DrawEvent;
+			import util.type.ElementProperty;
+			import util.type.ElementTypes;
+			
+			//程序内核
+			[Bindable]
+			private var coreApp:CoreApp;
+			
+			protected function init():void
+			{
+				stage.addEventListener(Event.RESIZE, resizeHandler, false, 0, true);
+				coreApp = new CoreApp();
+				coreApp.canvas.renderBG(stage.stageWidth, stage.stageHeight);
+				coreAppContainer.addChild(coreApp);
+				coreApp.renderBG();
+				listentCanvas();
+				listenProperty();
+				listenToolBar();
+				listenExprot();
+				listenInsert();
+				listenShapes();
+				linstenScaleControl();
+				listenKeyBoard();
+				shapeScaleControl.visible = false;
+			}
+			
+			private function linstenScaleControl():void
+			{
+				shapeScaleControl.addEventListener(ScaleControlEvent.SCALE_COMPLETE, scaleControlHandler, false, 0, true);
+				shapeScaleControl.addEventListener(ScaleControlEvent.SCLAE_LINE_COMPLETE, scaleControlHandler, false, 0, true);
+				shapeScaleControl.addEventListener(ScaleControlEvent.RETURN_TO_SCALE_ICON, scaleControlHandler, false, 0, true);
+				shapeScaleControl.addEventListener(ScaleControlEvent.SHOW_SCALE_CONTROL_ICON, scaleControlHandler, false, 0, true);
+			}
+			
+			private function listentCanvas():void
+			{
+				coreApp.canvas.addEventListener(CanvasEvent.DOWN_CANVAS, canvasHandler, false, 0, true);
+				coreApp.canvas.addEventListener(CanvasEvent.OUT_CANVAS, canvasHandler, false, 0, true);
+				coreApp.canvas.addEventListener(CanvasEvent.OVER_CANVAS, canvasHandler, false, 0, true);
+				
+				coreApp.canvas.addEventListener(CanvasEvent.DOWN_ELEMENT, canvasHandler, false, 0, true);
+				coreApp.canvas.addEventListener(CanvasEvent.OVER_EDIT_TEXT, canvasHandler, false, 0, true);
+				
+				coreApp.canvas.addEventListener(DrawEvent.DRAW_RECT_COMPLETE, getDrawData, false, 0, true);
+				coreApp.canvas.addEventListener(DrawEvent.DRAW_LINE_COMPLETE, getDrawData, false, 0, true);
+				coreApp.canvas.addEventListener(ElementEvent.CURRENT_ELEMENT, elementHandler, false, 0, true);
+				coreApp.canvas.addEventListener(ElementEvent.UNSELECT_ELEMENT, elementHandler, false, 0, true);
+				coreApp.canvas.addEventListener(ElementEvent.UPDATE_SIZE_AND_POSITION, elementHandler, false, 0, true);
+			}
+			
+			//画完虚线、框返回信息
+			private function getDrawData(e:DrawEvent):void
+			{
+				switch(e.type)
+				{
+					case DrawEvent.DRAW_LINE_COMPLETE:
+						coreApp.elementController.creatElement(ElementTypes.LINE, e.lineData);
+						break;
+					case DrawEvent.DRAW_RECT_COMPLETE:
+						coreApp.elementController.creatElement(shapesPanel.currentSelectedType, e.rectData);
+						break;
+				}
+				
+			}
+			
+			private function canvasHandler(e:CanvasEvent):void
+			{
+				switch(e.type)
+				{
+					case CanvasEvent.DOWN_CANVAS:
+						toolBar.currentMode.downCanvas(coreApp);
+						break;
+					case CanvasEvent.OVER_EDIT_TEXT:
+//						toolTipLayer.hideMouseIcon();
+						break;
+					case CanvasEvent.OUT_EDIT_TEXT:
+//						toolTipLayer.showMouseIcon();
+						break;
+					case CanvasEvent.OUT_CANVAS:
+						toolBar.currentMode.outCanvas(toolTipLayer);
+						break;
+					case CanvasEvent.OVER_CANVAS:
+						toolBar.currentMode.overCanvas(toolTipLayer);
+						break;
+					case CanvasEvent.DOWN_ELEMENT:
+						toolBar.currentMode.downShape(coreApp, e.element);
+						break;
+				}
+			}
+			
+			private function elementHandler(e:ElementEvent):void
+			{
+				switch(e.type)
+				{
+					case ElementEvent.CURRENT_ELEMENT:
+						propertyPanel.shapeVO = e.element.vo;
+						shapeScaleControl.shapeVO = e.element.vo;
+						shapeScaleControl.visible = true;
+						updateScaleControl();
+						switch(e.element.vo.type)
+						{
+							case ElementTypes.LINE:
+								toolBar.dispatchEvent(new PropertyPanelEvent(PropertyPanelEvent.PROPERTY_TO_CONNECT));
+								shapeScaleControl.currentState = "line";
+								shapeScaleControl.startX = ((e.element.vo as LineVO).startPoint.x - (e.element.vo as LineVO).position.x) * coreApp.canvas.scaleX;
+								shapeScaleControl.startY = ((e.element.vo as LineVO).startPoint.y - (e.element.vo as LineVO).position.y) * coreApp.canvas.scaleX;
+								shapeScaleControl.endX = ((e.element.vo as LineVO).endPoint.x - (e.element.vo as LineVO).position.x) * coreApp.canvas.scaleX;
+								shapeScaleControl.endY = ((e.element.vo as LineVO).endPoint.y - (e.element.vo as LineVO).position.y) * coreApp.canvas.scaleX;
+								break;
+							
+							case ElementTypes.TEXT:
+								toolBar.dispatchEvent(new PropertyPanelEvent(PropertyPanelEvent.PROPERTY_TO_TEXT));
+								shapeScaleControl.currentState = "text";
+								break;
+							
+							case ElementTypes.IMAGE:
+								toolBar.dispatchEvent(new PropertyPanelEvent(PropertyPanelEvent.PROPERTY_TO_IMAGE));
+								shapeScaleControl.currentState = "shape";
+								break;
+							
+							case ElementTypes.GROUP:
+								toolBar.dispatchEvent(new PropertyPanelEvent(PropertyPanelEvent.PROPERTY_TO_GROUP));
+								shapeScaleControl.currentState = "group";
+								break;
+							
+							default:
+							{
+								toolBar.dispatchEvent(new PropertyPanelEvent(PropertyPanelEvent.PROPERTY_TO_SHAPE));
+								shapeScaleControl.currentState = "shape";
+								break;
+							}
+						}
+						break;
+					
+					case ElementEvent.UNSELECT_ELEMENT:
+						toolBar.dispatchEvent(new PropertyPanelEvent(PropertyPanelEvent.PROPERTY_TO_STAGE));
+						
+						shapeScaleControl.visible = false;
+						break;
+					
+					case ElementEvent.UPDATE_SIZE_AND_POSITION:
+						updateScaleControl();
+						break;
+				}
+			}
+			
+			//更新控制点位置
+			private function updateScaleControl():void
+			{
+				shapeScaleControl.x = coreApp.scaleControlPosition.x;
+				shapeScaleControl.y= coreApp.scaleControlPosition.y;
+				shapeScaleControl.topRightX = coreApp.scaleControlPositionTopRight.x;
+				shapeScaleControl.bottomLeftY = coreApp.scaleControlPositionBottomLeft.y;
+				shapeScaleControl.bottomRightX = coreApp.scaleControlPositionBottomRight.x;
+				shapeScaleControl.bottomRightY = coreApp.scaleControlPositionBottomRight.y;
+				shapeScaleControl.centerX = coreApp.scaleControlPositionCenter.x;
+				shapeScaleControl.centerY = coreApp.scaleControlPositionCenter.y;
+				shapeScaleControl.topLeftX = 0;
+				shapeScaleControl.topLeftY = 0;
+				shapeScaleControl.topRightY = 0;
+				shapeScaleControl.bottomLeftX = 0; 
+			}
+			
+			private function resizeHandler(evt:Event):void
+			{
+				coreApp.renderBG();
+				upDatePanelsSize();
+			}
+			
+			private function listenProperty():void
+			{
+				propertyPanel.normalToolbar.addEventListener(PropertyPanelEvent.NORMAL_BOTTOM_LAYER, propertyHandler, false, 0,true);
+				propertyPanel.normalToolbar.addEventListener(PropertyPanelEvent.NORMAL_DELETE, propertyHandler, false, 0,true);
+				propertyPanel.normalToolbar.addEventListener(PropertyPanelEvent.NORMAL_DUPLICATE, propertyHandler, false, 0,true);
+				propertyPanel.normalToolbar.addEventListener(PropertyPanelEvent.NORMAL_GROUP, propertyHandler, false, 0,true);
+				propertyPanel.normalToolbar.addEventListener(PropertyPanelEvent.NORMAL_TOP_LAYER, propertyHandler, false, 0,true);
+				propertyPanel.normalToolbar.addEventListener(PropertyPanelEvent.NORMAL_UNGROUP, propertyHandler, false, 0,true);
+				propertyPanel.normalToolbar.addEventListener(PropertyPanelEvent.NORMAL_EXTENSION, propertyHandler, false, 0,true);
+				
+				propertyPanel.addEventListener(PropertyPanelEvent.CHANGE_THICKNESS, propertyHandler, false, 0, true);
+				propertyPanel.addEventListener(PropertyPanelEvent.CHANGE_ALPHA_SHAPE_LINE, propertyHandler, false, 0, true);
+				propertyPanel.addEventListener(PropertyPanelEvent.CHANGE_ALPHA_SHAPE, propertyHandler, false, 0, true);
+				propertyPanel.addEventListener(PropertyPanelEvent.CHANGE_ARROW, propertyHandler, false, 0, true);
+				
+				propertyPanel.addEventListener(PropertyPanelEvent.CHANGE_PROPERTY_SHAPE_COLOR, propertyHandler, false, 0, true);
+				propertyPanel.addEventListener(PropertyPanelEvent.CHANGE_PROPERTY_SHAPE_LINE_COLOR, propertyHandler, false, 0, true);
+				propertyPanel.addEventListener(PropertyPanelEvent.CHANGE_BG_COLOR, propertyHandler, false, 0, true);
+				
+				propertyPanel.addEventListener(PropertyPanelEvent.CHANGE_XY, propertyHandler, false, 0, true);
+				propertyPanel.addEventListener(PropertyPanelEvent.CHANGE_WH, propertyHandler, false, 0, true);
+				
+				propertyPanel.addEventListener(PropertyPanelEvent.CHANGE_IMAGE_XY, propertyHandler, false, 0, true);
+				propertyPanel.addEventListener(PropertyPanelEvent.CHANGE_IMAGE_WH, propertyHandler, false, 0, true);
+				
+				propertyPanel.addEventListener(TextFormatChangedEvent.FONT_SIZE_CHANGED, textHandler, false, 0, true);
+				propertyPanel.addEventListener(TextFormatChangedEvent.FONT_FAMILY_CHANGED, textHandler, false, 0, true);
+				propertyPanel.addEventListener(TextFormatChangedEvent.FONT_BOLD_CHANGED, textHandler, false, 0, true);
+				propertyPanel.addEventListener(TextFormatChangedEvent.FONT_ALIGN_CHANGED, textHandler, false, 0, true);
+				propertyPanel.addEventListener(TextFormatChangedEvent.FONT_ITALIC_CHANGED, textHandler, false, 0, true);
+				propertyPanel.addEventListener(TextFormatChangedEvent.FONT_UNDERLINE_CHANGED, textHandler, false, 0, true);
+				
+				addEventListener(ToolBarEvent.HIDE_PROPERTY_PANEL, panelsHide, false, 0, true);
+				addEventListener(ToolBarEvent.SHOW_PROPERTY_PANEL, panelsShow, false, 0, true);
+				
+				addEventListener(PropertyPanelEvent.PROPERTY_TO_CONNECT, propertyHandler, false, 0, true);
+				addEventListener(PropertyPanelEvent.PROPERTY_TO_GROUP, propertyHandler, false, 0, true);
+				addEventListener(PropertyPanelEvent.PROPERTY_TO_IMAGE, propertyHandler, false, 0, true);
+				addEventListener(PropertyPanelEvent.PROPERTY_TO_SHAPE, propertyHandler, false, 0, true);
+				addEventListener(PropertyPanelEvent.PROPERTY_TO_STAGE, propertyHandler, false, 0, true);
+				addEventListener(PropertyPanelEvent.PROPERTY_TO_TEMPGROUP, propertyHandler, false, 0, true);
+				addEventListener(PropertyPanelEvent.PROPERTY_TO_TEMPGROUP_LINE, propertyHandler, false, 0, true);
+				addEventListener(PropertyPanelEvent.PROPERTY_TO_TEMPGROUP_TEXT, propertyHandler, false, 0, true);
+				addEventListener(PropertyPanelEvent.PROPERTY_TO_TEXT, propertyHandler, false, 0, true);
+				
+				propertyPanel.addEventListener(PropertyPanelEvent.SHAPE_ALIGN_BOTTOM, propertyHandler, false, 0, true);
+				propertyPanel.addEventListener(PropertyPanelEvent.SHAPE_ALIGN_LEFT, propertyHandler, false, 0, true);
+				propertyPanel.addEventListener(PropertyPanelEvent.SHAPE_ALIGN_MIDDLE_H, propertyHandler, false, 0, true);
+				propertyPanel.addEventListener(PropertyPanelEvent.SHAPE_ALIGN_MIDDLE_V, propertyHandler, false, 0, true);
+				propertyPanel.addEventListener(PropertyPanelEvent.SHAPE_ALIGN_RIGHT, propertyHandler, false, 0, true);
+				propertyPanel.addEventListener(PropertyPanelEvent.SHAPE_ALIGN_TOP, propertyHandler, false, 0, true);
+				
+				propertyPanel.addEventListener(PropertyPanelEvent.LOCK, propertyHandler, false, 0, true);
+			}
+			
+			public function propertyHandler(e:PropertyPanelEvent):void
+			{
+				switch(e.type)
+				{
+					// 通用元素操作
+					case PropertyPanelEvent.NORMAL_BOTTOM_LAYER:
+						coreApp.elementController.elementToBottomLayer();
+						break;
+					case PropertyPanelEvent.NORMAL_DELETE:
+						coreApp.elementController.deleteElement();
+						break;
+					case PropertyPanelEvent.NORMAL_DUPLICATE:
+						coreApp.elementController.duplicateElement();
+						break;
+					case PropertyPanelEvent.NORMAL_GROUP:
+						coreApp.elementController.groupElement();
+						break;
+					case PropertyPanelEvent.NORMAL_TOP_LAYER:
+						coreApp.elementController.elementToTopLayer();
+						break;
+					case PropertyPanelEvent.NORMAL_UNGROUP:
+						coreApp.elementController.unGroupElement();
+						break;
+					case PropertyPanelEvent.NORMAL_EXTENSION:
+						coreApp.elementController.extensionElement();
+						break;
+					
+					//元素基本属性操作
+					case PropertyPanelEvent.CHANGE_THICKNESS:
+						coreApp.elementController.changeElementProperty(propertyPanel.thickSilder.value, ElementProperty.THICKNESS);
+						break;
+					case PropertyPanelEvent.CHANGE_ALPHA_SHAPE_LINE:
+						coreApp.elementController.changeElementProperty(propertyPanel.lineAlphaSlider.value, ElementProperty.FRAME_ALHPA);
+						break;
+					case PropertyPanelEvent.CHANGE_ALPHA_SHAPE:
+						coreApp.elementController.changeElementProperty(propertyPanel.alphaSlider.value, ElementProperty.ALPHA);
+						break;
+					case PropertyPanelEvent.CHANGE_ARROW:
+						coreApp.elementController.changeElementProperty(propertyPanel.lineArrow.leftArrow, ElementProperty.START_ARROW);
+						coreApp.elementController.changeElementProperty(propertyPanel.lineArrow.rightArrow, ElementProperty.END_ARROW);
+						break;
+					
+					case PropertyPanelEvent.CHANGE_PROPERTY_SHAPE_COLOR:
+						coreApp.elementController.changeElementProperty(propertyPanel.shapeColor.colorValue, ElementProperty.COLOR);
+						break;
+					case PropertyPanelEvent.CHANGE_PROPERTY_SHAPE_LINE_COLOR:
+						coreApp.elementController.changeElementProperty(propertyPanel.shapelineColor.colorValue, ElementProperty.FRAME_COLOR);
+						break;
+					case PropertyPanelEvent.CHANGE_BG_COLOR:
+						coreApp.elementController.changeBGColor(propertyPanel.canvasBGcolor);
+						break;
+					
+					case PropertyPanelEvent.CHANGE_XY:
+						coreApp.elementController.changeElementProperty(new Point(propertyPanel.shapeMapper.valueX, propertyPanel.shapeMapper.valueY), ElementProperty.POSITION);
+						break;
+					case PropertyPanelEvent.CHANGE_WH:
+						coreApp.elementController.changeElementProperty(propertyPanel.shapeMapper.valueWidth, ElementProperty.WIDTH);
+						coreApp.elementController.changeElementProperty(propertyPanel.shapeMapper.valueHeight, ElementProperty.HEIGHT);
+						break;
+					
+					case PropertyPanelEvent.CHANGE_IMAGE_XY:
+						coreApp.elementController.changeElementProperty(new Point(propertyPanel.imageMapper.valueX, propertyPanel.imageMapper.valueY), ElementProperty.POSITION);
+						break;
+					case PropertyPanelEvent.CHANGE_IMAGE_WH:
+						coreApp.elementController.changeElementProperty(propertyPanel.imageMapper.valueWidth, ElementProperty.WIDTH);
+						coreApp.elementController.changeElementProperty(propertyPanel.imageMapper.valueHeight, ElementProperty.HEIGHT);
+						break;
+					
+					//属性面板状态切换
+					case PropertyPanelEvent.PROPERTY_TO_CONNECT:
+						propertyPanel.toConnectState();
+						toolBar.propertyBtn.selectedIndex = 4;
+						break;
+					case PropertyPanelEvent.PROPERTY_TO_GROUP:
+						propertyPanel.toGroupState();
+						toolBar.propertyBtn.selectedIndex = 3;
+						break;
+					case PropertyPanelEvent.PROPERTY_TO_IMAGE:
+						propertyPanel.toImageState();
+						toolBar.propertyBtn.selectedIndex = 2;
+						break;
+					case PropertyPanelEvent.PROPERTY_TO_SHAPE:
+						propertyPanel.toShapeState();
+						toolBar.propertyBtn.selectedIndex = 1;
+						break;
+					case PropertyPanelEvent.PROPERTY_TO_STAGE:
+						propertyPanel.toStageState();
+						toolBar.propertyBtn.selectedIndex = 0;
+						break;
+//					case PropertyPanelEvent.PROPERTY_TO_TEMPGROUP:
+//						propertyPanel.toTempGroupState();
+//						toolBar.propertyBtn.selectedIndex = 3;
+//						break;
+//					case PropertyPanelEvent.PROPERTY_TO_TEMPGROUP_LINE:
+//						propertyPanel.toTempGroupLineState();
+//						toolBar.propertyBtn.selectedIndex = 3;
+//						break;
+//					case PropertyPanelEvent.PROPERTY_TO_TEMPGROUP_TEXT:
+//						propertyPanel.toTempGroupTextState();
+//						toolBar.propertyBtn.selectedIndex = 3;
+//						break;
+					case PropertyPanelEvent.PROPERTY_TO_TEXT:
+						propertyPanel.toTextState();
+						toolBar.propertyBtn.selectedIndex = 5;
+						break;
+					
+					case PropertyPanelEvent.SHAPE_ALIGN_BOTTOM:
+						coreApp.elementController.ElementAlignBottom();
+						break;
+					case PropertyPanelEvent.SHAPE_ALIGN_LEFT:
+						coreApp.elementController.elementAlignLeft();
+						break;
+					case PropertyPanelEvent.SHAPE_ALIGN_MIDDLE_H:
+						coreApp.elementController.elementAlignMiddleHorizontal();
+						break;
+					case PropertyPanelEvent.SHAPE_ALIGN_MIDDLE_V:
+						coreApp.elementController.elementAlignMiddleVertical();
+						break;
+					case PropertyPanelEvent.SHAPE_ALIGN_RIGHT:
+						coreApp.elementController.elementAlignRight();
+						break;
+					case PropertyPanelEvent.SHAPE_ALIGN_TOP:
+						coreApp.elementController.elementAlignTop();
+						break;
+					
+					case PropertyPanelEvent.LOCK:
+						coreApp.elementController.elementLock();
+						break;
+				}
+			}
+			
+			public function textHandler(e:TextFormatChangedEvent):void
+			{
+				var temp:Boolean = false;
+				switch(e.type)
+				{
+					case TextFormatChangedEvent.FONT_SIZE_CHANGED:
+						coreApp.elementController.changeElementProperty(propertyPanel.fontSize.selectedItem, ElementProperty.FONT_SIZE);
+						break;
+					case TextFormatChangedEvent.FONT_FAMILY_CHANGED:
+						coreApp.elementController.changeElementProperty(propertyPanel.fontFamily.selectedItem.fontName, ElementProperty.FONT);
+						break;
+					case TextFormatChangedEvent.FONT_BOLD_CHANGED:
+						if (propertyPanel.fontBoldBtn.selected)
+						{
+							temp = false
+						}
+						else
+						{
+							temp = true;
+						}
+						coreApp.elementController.changeElementProperty(temp, ElementProperty.BOLD);
+						break;
+					case TextFormatChangedEvent.FONT_ALIGN_CHANGED:
+						coreApp.elementController.changeElementProperty(propertyPanel.aligns[propertyPanel.fontAlign.selectedIndex], ElementProperty.ALIGN);
+						break;
+					case TextFormatChangedEvent.FONT_ITALIC_CHANGED:
+						if (propertyPanel.fontTiltBtn.selected)
+						{
+							temp = false
+						}
+						else
+						{
+							temp = true;
+						}
+						coreApp.elementController.changeElementProperty(temp, ElementProperty.ITALIC);
+						break;
+					case TextFormatChangedEvent.FONT_UNDERLINE_CHANGED:
+						if (propertyPanel.fontUnderlineBtn.selected)
+						{
+							temp = false
+						}
+						else
+						{
+							temp = true;
+						}
+						coreApp.elementController.changeElementProperty(temp, ElementProperty.UNDER_LINE);
+						break;
+						
+				}
+			}
+			
+			private function listenToolBar():void
+			{
+				toolBar.addEventListener(ToolBarEvent.TO_INSERT_MODE, toolBarHandler, false, 0, true);
+				toolBar.addEventListener(ToolBarEvent.TO_SELECTED_MODE, toolBarHandler, false, 0, true);
+				toolBar.addEventListener(ToolBarEvent.TO_SHAPE_MODE, toolBarHandler, false, 0, true);
+				toolBar.addEventListener(ToolBarEvent.TO_TEXT_MODE, toolBarHandler, false, 0, true);
+				toolBar.addEventListener(ToolBarEvent.TO_LINE_MODE, toolBarHandler, false, 0, true);
+				toolBar.addEventListener(ToolBarEvent.TO_CONNECT_MODE, toolBarHandler, false, 0, true);
+				toolBar.addEventListener(ToolBarEvent.TO_DRWA_LINE_MODE, toolBarHandler, false, 0, true);
+				toolBar.addEventListener(ToolBarEvent.TO_MOVE_SCREEN_MODE, toolBarHandler, false, 0, true);
+				toolBar.addEventListener(ToolBarEvent.TO_ZOOM_IN_MODE, toolBarHandler, false, 0, true);
+				toolBar.addEventListener(ToolBarEvent.TO_ZOOM_OUT_MODE, toolBarHandler, false, 0, true);
+				toolBar.addEventListener(ToolBarEvent.PERCENT_CANVAS, toolBarHandler, false, 0, true);
+				toolBar.addEventListener(ToolBarEvent.ONE_PERCENT_CANVAS, toolBarHandler, false, 0, true);
+				toolBar.addEventListener(ToolBarEvent.TO_EXPORT_MODE, toolBarHandler, false, 0, true);
+				toolBar.addEventListener(ToolBarEvent.CLICK_PROPERTY_BTN, toolBarHandler, false, 0, true);
+				toolBar.addEventListener(ToolBarEvent.CLICK_NEXT_BTN, toolBarHandler, false, 0, true);
+				toolBar.addEventListener(ToolBarEvent.CLICK_RETURN_BTN, toolBarHandler, false, 0, true);
+			}
+			
+			private function toolBarHandler(e:ToolBarEvent):void
+			{
+				switch(e.type)
+				{
+					case ToolBarEvent.TO_INSERT_MODE:
+						coreApp.elementController.unSelectElement();
+						toolBar.currentMode.toInsertMode();
+						toolTipLayer.toScaledMode();
+						break;
+					case ToolBarEvent.TO_SELECTED_MODE:
+						coreApp.canvas.mouseChildren = true;
+//						coreApp.elementController.unSelectElement();
+						toolBar.currentMode.toSelectMode();
+						toolTipLayer.toScaledMode();
+						break;
+					case ToolBarEvent.TO_SHAPE_MODE:
+						coreApp.elementController.unSelectElement();
+						toolBar.currentMode.toShapeMode();
+						toolTipLayer.toSelectedMode();
+						break;
+					case ToolBarEvent.TO_TEXT_MODE:
+						toolBar.currentMode.toTextMode();
+						toolTipLayer.toTextMode();
+						break;
+					case ToolBarEvent.TO_LINE_MODE:
+						coreApp.elementController.unSelectElement();
+						toolBar.currentMode.toLineMode();
+						toolTipLayer.toConnectorMode();
+						break;
+					case ToolBarEvent.TO_CONNECT_MODE:
+						coreApp.elementController.unSelectElement();
+						toolBar.currentMode.toConnectMode();
+						toolTipLayer.toConnectorMode();
+						break;
+					case ToolBarEvent.TO_DRWA_LINE_MODE:
+						coreApp.elementController.unSelectElement();
+						toolBar.currentMode.toDrawlineMode();
+						toolTipLayer.toConnectorMode();
+						break;
+					case ToolBarEvent.TO_MOVE_SCREEN_MODE:
+						coreApp.canvas.mouseChildren = false;
+						coreApp.elementController.unSelectElement();
+						toolBar.currentMode.toMoveScreenMode();
+						toolTipLayer.toMoveScreenMode();
+						panelsHide(null,propertyPanel);
+						break;
+					case ToolBarEvent.TO_ZOOM_IN_MODE:
+						coreApp.canvas.mouseChildren = false;
+						coreApp.elementController.unSelectElement();
+						toolBar.currentMode.toZoomInMode();
+						toolTipLayer.toZoomInMode();
+						panelsHide(null,propertyPanel);
+						break;
+					case ToolBarEvent.TO_ZOOM_OUT_MODE:
+						coreApp.canvas.mouseChildren = false;
+						coreApp.elementController.unSelectElement();
+						toolBar.currentMode.toZoomOutMode();
+						toolTipLayer.toZoomOutMode();
+						panelsHide(null,propertyPanel);
+						break;
+					case ToolBarEvent.PERCENT_CANVAS:
+						coreApp.canvasController.zoomAuto();
+						panelsHide(null,propertyPanel);
+						break;
+					case ToolBarEvent.ONE_PERCENT_CANVAS:
+						coreApp.canvasController.hundrerPercent();
+						panelsHide(null,propertyPanel);
+						break;
+					case ToolBarEvent.TO_EXPORT_MODE:
+						coreApp.elementController.unSelectElement();
+						toolBar.currentMode.toExportMode();
+						break;
+					case ToolBarEvent.CLICK_PROPERTY_BTN:
+						toolBar.dispatchEvent(new ToolBarEvent(ToolBarEvent.TO_SELECTED_MODE));
+						
+						if (propertyPanel.visible)
+						{
+							panelsHide(null,propertyPanel);
+						}
+						else
+						{
+							panelsShow(null,propertyPanel);
+						}
+						break;
+					case ToolBarEvent.CLICK_NEXT_BTN:
+						coreApp.otherController.next();
+						break;
+					case ToolBarEvent.CLICK_RETURN_BTN:
+						coreApp.otherController.previous();
+						break;
+				}
+			}
+			
+			private function listenInsert():void
+			{
+				insertPanel.addEventListener(InsertPanelEvent.IMPORT_FILE, insertHandler, false, 0, true);
+				insertPanel.addEventListener(InsertPanelEvent.IMPORT_MODEL, insertHandler, false, 0, true);
+				insertPanel.addEventListener(InsertPanelEvent.INSERT_IMAGE, insertHandler, false, 0, true);
+				insertPanel.addEventListener(InsertPanelEvent.NEW_FILE, insertHandler, false, 0, true);
+				toolBar.addEventListener(ToolBarEvent.HIDE_INSERT_PANEL, panelsHide, false, 0, true);
+				toolBar.addEventListener(ToolBarEvent.SHOW_INSERT_PANEL, panelsShow, false, 0, true);
+			}
+			
+			private function insertHandler(e:InsertPanelEvent):void
+			{
+				switch(e.type)
+				{
+					case InsertPanelEvent.IMPORT_FILE:
+						coreApp.otherController.importFile();
+						break;
+					case InsertPanelEvent.IMPORT_MODEL:
+						
+						break;
+					case InsertPanelEvent.INSERT_IMAGE:
+						coreApp.otherController.insertImage();
+						break;
+					case InsertPanelEvent.NEW_FILE:
+						
+						break;
+				}
+			}
+			
+			private function listenExprot():void
+			{
+				exportPanel.addEventListener(ExportPanelEvent.SAVE_IMAGE, exprotHandler,false,0,true);
+				exportPanel.addEventListener(ExportPanelEvent.EXPORT_FILE, exprotHandler,false,0,true);
+				toolBar.addEventListener(ToolBarEvent.HIDE_EXPORT_PANEL, panelsHide, false, 0, true);
+				toolBar.addEventListener(ToolBarEvent.SHOW_EXPORT_PANEL, panelsShow, false, 0, true);
+			}
+			
+			private function exprotHandler(e:ExportPanelEvent):void
+			{
+				switch(e.type)
+				{
+					case ExportPanelEvent.SAVE_IMAGE:
+						coreApp.otherController.saveImage();
+						break;
+					case ExportPanelEvent.EXPORT_FILE:
+						coreApp.otherController.exportFile();
+						break;
+				}
+			}
+			
+			
+			private function listenShapes():void
+			{
+				shapesPanel.addEventListener(ScaleControlEvent.RETURN_TO_SCALE_ICON, scaleControlHandler, false, 0, true);
+				shapesPanel.addEventListener(ScaleControlEvent.SHOW_SCALE_CONTROL_ICON, scaleControlHandler, false, 0, true);
+				toolBar.addEventListener(ToolBarEvent.HIDE_SHAPE_PANEL, panelsHide, false, 0, true);
+				toolBar.addEventListener(ToolBarEvent.SHOW_SHAPE_PANEL, panelsShow, false, 0, true);
+			}
+			
+			private function scaleControlHandler(e:ScaleControlEvent):void
+			{
+				switch(e.type)
+				{
+					case ScaleControlEvent.RETURN_TO_SCALE_ICON:
+						toolTipLayer.returnToScaleTipIcon();
+						break;
+					case ScaleControlEvent.SHOW_SCALE_CONTROL_ICON:
+						toolTipLayer.showScaleControlIcon(e.controlType);
+						break;
+					case ScaleControlEvent.SCALE_COMPLETE:
+						coreApp.elementController.changeElementProperty(shapeScaleControl.widthValue, ElementProperty.WIDTH);
+						coreApp.elementController.changeElementProperty(shapeScaleControl.heightValue, ElementProperty.HEIGHT);
+						coreApp.elementController.changeElementProperty(new Point(shapeScaleControl.x + shapeScaleControl.topLeft.x, shapeScaleControl.y + shapeScaleControl.topLeft.y), ElementProperty.POSITION);
+						break;
+					case ScaleControlEvent.SCLAE_LINE_COMPLETE:
+						coreApp.elementController.changeElementProperty(new Point(shapeScaleControl.startX + shapeScaleControl.x, shapeScaleControl.startY + + shapeScaleControl.y), ElementProperty.START_POINT);
+						coreApp.elementController.changeElementProperty(new Point(shapeScaleControl.endX + shapeScaleControl.x, shapeScaleControl.endY + + shapeScaleControl.y), ElementProperty.END_POINT);
+						break;
+				}
+			}
+			
+			/**
+			 * 面板显示
+			 */
+			private function panelsShow(e:ToolBarEvent = null, panel:PanelBase = null):void
+			{
+				if (e)
+				{
+					var panel:PanelBase;
+					switch(e.type)
+					{
+						case ToolBarEvent.SHOW_INSERT_PANEL:
+							panel = insertPanel;
+							break;
+						case ToolBarEvent.SHOW_CONNECTOR_PANEL:
+							panel = connectorPanel;
+							break;
+						case ToolBarEvent.SHOW_EXPORT_PANEL:
+							panel = exportPanel;
+							break;
+						case ToolBarEvent.SHOW_SHAPE_PANEL:
+							panel = shapesPanel;
+							break;
+						case ToolBarEvent.SHOW_PROPERTY_PANEL:
+							panel = propertyPanel;
+							break;
+					}
+				}
+				
+				if (panel.visible)
+					return;
+				panel.visible = true;
+				panel.enabled = true;
+//				mirrorAnimation(propertyPanel,true);
+			}
+			
+			/**
+			 * 面板隐藏
+			 */
+			private function panelsHide(e:ToolBarEvent = null, panel:PanelBase = null):void
+			{
+				if (e)
+				{
+					var panel:PanelBase;
+					switch(e.type)
+					{
+						case ToolBarEvent.HIDE_INSERT_PANEL:
+							panel = insertPanel;
+							break;
+						case ToolBarEvent.HIDE_CONNECTOR_PANEL:
+							panel = connectorPanel;
+							break;
+						case ToolBarEvent.HIDE_EXPORT_PANEL:
+							panel = exportPanel;
+							break;
+						case ToolBarEvent.HIDE_SHAPE_PANEL:
+							panel = shapesPanel;
+							break;
+						case ToolBarEvent.HIDE_PROPERTY_PANEL:
+							panel = propertyPanel;
+							break;
+					}
+				}
+				
+				if (!panel.visible)
+					return;
+				
+				panel.visible = false;
+				panel.enabled = false;
+//				mirrorAnimation(propertyPanel,false);
+			}
+			
+			protected function toolBar_creationCompleteHandler(event:FlexEvent):void
+			{
+				upDatePanelsSize();
+			}
+			
+			private function upDatePanelsSize():void
+			{
+				insertPanel.x = (toolBar.x + toolBar.insertBtn.x + (toolBar.insertBtn.width)) - (insertPanel.width / 2);
+				shapesPanel.x = (toolBar.x + toolBar.leftBtn.x + toolBar.shapeBtn.x);
+				connectorPanel.x = (toolBar.x + toolBar.leftBtn.x + toolBar.connectorBtn.x + (toolBar.connectorBtn.width)) - (connectorPanel.width / 2);
+				propertyPanel.x = (toolBar.x + toolBar.rightBtn.x + toolBar.propertyBtn.x + (toolBar.propertyBtn.width)) - (propertyPanel.width / 2);
+				exportPanel.x = (toolBar.x + toolBar.rightBtn.x + toolBar.exportBtn.x + (toolBar.exportBtn.width)) - (exportPanel.width / 2);
+			}
+			
+			private function listenKeyBoard():void
+			{
+				coreApp.canvas.addEventListener(controller.event.KeyboardEvent.KEYBOARD_DOWN_SPACE, keyboardHandler, false, 0, true);
+				coreApp.canvas.addEventListener(controller.event.KeyboardEvent.KEYBOARD_UP_SPACE, keyboardHandler, false, 0, true);
+			}
+			
+			protected function keyboardHandler(event:controller.event.KeyboardEvent):void
+			{
+				switch(event.type)
+				{
+					case controller.event.KeyboardEvent.KEYBOARD_DOWN_SPACE:
+					{
+ 						toolBar.dispatchEvent(new ToolBarEvent(ToolBarEvent.TO_MOVE_SCREEN_MODE));
+						break;
+					}
+					case controller.event.KeyboardEvent.KEYBOARD_UP_SPACE:
+					{
+						toolBar.dispatchEvent(new ToolBarEvent(ToolBarEvent.TO_SELECTED_MODE));
+						break;
+					}
+				}
+			}
+			
+		]]>
+	</fx:Script>
+	
+	<mx:UIComponent id="coreAppContainer" width="100%" height="100%"/>
+	<components:ScaleControl id="shapeScaleControl" bottomLeftX="0" canvas="{coreApp.canvas}"
+							 topLeftX="0" topLeftY="0" topRightY="0"/>
+	<panels:ToolBarUI id="toolBar" left="20" right="20" bottom="30"
+					  creationComplete="toolBar_creationCompleteHandler(event)"/>
+	<panels:InsertPanel id="insertPanel" visible="false" bottom="95" enabled="false"/>
+	<panels:ShapesPanel id="shapesPanel" visible="false" bottom="95" arrowPosition="left"
+						enabled="false"/>
+	<panels:ConnectorPanel id="connectorPanel" visible="false" bottom="95" enabled="false"/>
+	<panels:PropertyPanel id="propertyPanel" visible="false" bottom="95" enabled="false"/>
+	<panels:ExportPanel id="exportPanel" visible="false" bottom="95" enabled="false"/>
+	<panels:ToolTipLayer id="toolTipLayer" width="100%" height="100%" mouseChildren="false"
+						 mouseEnabled="false"/>
+</s:Application>

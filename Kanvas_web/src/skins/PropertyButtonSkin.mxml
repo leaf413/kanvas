@@ -1,0 +1,34 @@
+<?xml version="1.0" encoding="utf-8"?>
+<s:Skin xmlns:fx="http://ns.adobe.com/mxml/2009" 
+		xmlns:s="library://ns.adobe.com/flex/spark" 
+		xmlns:mx="library://ns.adobe.com/flex/mx">
+	<!-- host component -->
+	<fx:Metadata>
+		[HostComponent("components.PropertyButton")]
+	</fx:Metadata>
+	
+	<!-- states -->
+	<s:states>
+		<s:State name="disabled"/>
+		<s:State name="down" />
+		<s:State name="over" />
+		<s:State name="up" />
+		<s:State name="selected" />
+	</s:states>
+	
+	<fx:Script>
+		<![CDATA[
+			import knowledgeMapEditor.controlIcons.*;
+		]]>
+	</fx:Script>
+	
+	<!-- SkinParts
+	name=iconDisplay, type=spark.primitives.BitmapImage, required=false
+	name=labelDisplay, type=spark.core.IDisplayText, required=false
+	-->
+	
+	<s:Group>
+		<s:BitmapImage id="bgDisplay" source.up="{prop_btn_icon_bg}" source.over="{prop_btn_icon_bg}" source.down="{prop_btn_icon_bg_selected}" source.selected="{prop_btn_icon_bg_selected}" />
+		<s:BitmapImage id="iconDisplay" verticalCenter="0" horizontalCenter="0"/>
+	</s:Group>
+</s:Skin>

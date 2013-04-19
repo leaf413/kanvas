@@ -1,0 +1,773 @@
+<?xml version="1.0" encoding="utf-8"?>
+<panels:PanelBase xmlns:fx="http://ns.adobe.com/mxml/2009" 
+					  xmlns:s="library://ns.adobe.com/flex/spark" 
+					  xmlns:mx="library://ns.adobe.com/flex/mx"
+					  xmlns:components="components.*"
+					  xmlns:panels="panels.*"
+					  skinClass="skins.PanelBaseSkin"
+					  contentBackgroundAlpha="0" 
+					  width="236"
+					  creationComplete="init()" xmlns:palette="components.palette.*" xmlns:skins="skins.*">
+
+	<fx:Declarations>
+		<!-- Place non-visual elements (e.g., services, value objects) here -->
+	</fx:Declarations>
+	
+	<fx:Script>
+		<![CDATA[
+			import events.PropertyPanelEvent;
+			import events.ShapeMapperEvent;
+			import events.TextFormatChangedEvent;
+			
+			import knowledgeMapEditor.controlIcons.icon_align_bottom;
+			import knowledgeMapEditor.controlIcons.icon_align_bottom_over;
+			import knowledgeMapEditor.controlIcons.icon_align_left;
+			import knowledgeMapEditor.controlIcons.icon_align_left_over;
+			import knowledgeMapEditor.controlIcons.icon_align_middle_h;
+			import knowledgeMapEditor.controlIcons.icon_align_middle_h_over;
+			import knowledgeMapEditor.controlIcons.icon_align_middle_v;
+			import knowledgeMapEditor.controlIcons.icon_align_middle_v_over;
+			import knowledgeMapEditor.controlIcons.icon_align_right;
+			import knowledgeMapEditor.controlIcons.icon_align_right_over;
+			import knowledgeMapEditor.controlIcons.icon_align_top;
+			import knowledgeMapEditor.controlIcons.icon_align_top_over;
+			import knowledgeMapEditor.controlIcons.icon_share_del;
+			import knowledgeMapEditor.controlIcons.icon_share_duplicate;
+			import knowledgeMapEditor.controlIcons.icon_share_group;
+			import knowledgeMapEditor.controlIcons.icon_text_align_center;
+			import knowledgeMapEditor.controlIcons.icon_text_align_left;
+			import knowledgeMapEditor.controlIcons.icon_text_align_right;
+			import knowledgeMapEditor.controlIcons.icon_text_bold;
+			import knowledgeMapEditor.controlIcons.icon_text_bold_over;
+			import knowledgeMapEditor.controlIcons.icon_text_bold_selected;
+			import knowledgeMapEditor.controlIcons.icon_text_italic;
+			import knowledgeMapEditor.controlIcons.icon_text_italic_over;
+			import knowledgeMapEditor.controlIcons.icon_text_italic_selected;
+			import knowledgeMapEditor.controlIcons.icon_text_underline;
+			import knowledgeMapEditor.controlIcons.icon_text_underline_over;
+			import knowledgeMapEditor.controlIcons.icon_text_underline_selected;
+			
+			import model.vo.ElementVO;
+			import model.vo.LineVO;
+			import model.vo.ShapeVO;
+			import model.vo.TextVO;
+			
+			import mx.collections.ArrayCollection;
+			
+			import panels.popertyPanelModes.ConnectState;
+			import panels.popertyPanelModes.GroupState;
+			import panels.popertyPanelModes.ImageState;
+			import panels.popertyPanelModes.LineState;
+			import panels.popertyPanelModes.PropertyStateBase;
+			import panels.popertyPanelModes.ShapeState;
+			import panels.popertyPanelModes.StageState;
+			import panels.popertyPanelModes.TempGroupLineState;
+			import panels.popertyPanelModes.TempGroupState;
+			import panels.popertyPanelModes.TempGroupTextState;
+			import panels.popertyPanelModes.TextState;
+			
+			import spark.events.IndexChangeEvent;
+			
+			private function init():void
+			{
+				initStates();
+				initFonts();
+			}
+			
+			//*******************************************************
+			//
+			// 状态控制
+			//
+			//*******************************************************
+			public function toStageState():void
+			{
+				propertyState.toStageState();
+			}
+			
+			public function toShapeState():void
+			{
+				propertyState.toShapeState();
+				normalToolbar.duplicateBtn.enabled = true;
+				normalToolbar.topLayerBtn.enabled = true;
+				normalToolbar.bottomLayerBtn.enabled = true;
+				normalToolbar.groupBtn.enabled = false;
+				normalToolbar.unGroupBtn.enabled = false;
+				normalToolbar.extensionBtn.enabled = true;
+			}
+			
+			public function toTextState():void
+			{
+				propertyState.toTextState();
+				normalToolbar.duplicateBtn.enabled = true;
+				normalToolbar.topLayerBtn.enabled = true;
+				normalToolbar.bottomLayerBtn.enabled = true;
+				normalToolbar.groupBtn.enabled = false;
+				normalToolbar.unGroupBtn.enabled = false;
+				normalToolbar.extensionBtn.enabled = true;
+			}
+			
+			public function toLineState():void
+			{
+				propertyState.toLineState();
+				normalToolbar.duplicateBtn.enabled = true;
+				normalToolbar.topLayerBtn.enabled = true;
+				normalToolbar.bottomLayerBtn.enabled = true;
+				normalToolbar.groupBtn.enabled = false;
+				normalToolbar.unGroupBtn.enabled = false;
+				normalToolbar.extensionBtn.enabled = true;
+			}
+			
+			public function toConnectState():void
+			{
+				propertyState.toConnectState();
+				normalToolbar.duplicateBtn.enabled = false;
+				normalToolbar.topLayerBtn.enabled = false;
+				normalToolbar.bottomLayerBtn.enabled = false;
+				normalToolbar.groupBtn.enabled = false;
+				normalToolbar.unGroupBtn.enabled = false;
+				normalToolbar.extensionBtn.enabled = true;
+			}
+			
+			public function toImageState():void
+			{
+				propertyState.toImageState();
+				normalToolbar.duplicateBtn.enabled = true;
+				normalToolbar.topLayerBtn.enabled = true;
+				normalToolbar.bottomLayerBtn.enabled = true;
+				normalToolbar.groupBtn.enabled = false;
+				normalToolbar.unGroupBtn.enabled = false;
+				normalToolbar.extensionBtn.enabled = true;
+			}
+			
+			public function toGroupState():void
+			{
+				propertyState.toGroupState();
+				normalToolbar.duplicateBtn.enabled = true;
+				normalToolbar.topLayerBtn.enabled = true;
+				normalToolbar.bottomLayerBtn.enabled = true;
+				normalToolbar.unGroupBtn.enabled = true;
+				normalToolbar.groupBtn.enabled = false;
+				normalToolbar.extensionBtn.enabled = false;
+			}
+			
+			public function toTempGroupState():void
+			{
+				propertyState.toTempGroupState();
+				normalToolbar.duplicateBtn.enabled = true;
+				normalToolbar.topLayerBtn.enabled = true;
+				normalToolbar.bottomLayerBtn.enabled = true;
+				normalToolbar.groupBtn.enabled = true;
+				normalToolbar.extensionBtn.enabled = false;
+			}
+			
+			public function toTempGroupLineState():void
+			{
+				propertyState.toTempGroupLineState();
+				normalToolbar.duplicateBtn.enabled = true;
+				normalToolbar.topLayerBtn.enabled = true;
+				normalToolbar.bottomLayerBtn.enabled = true;
+				normalToolbar.groupBtn.enabled = true;
+				normalToolbar.unGroupBtn.enabled = false;
+				normalToolbar.extensionBtn.enabled = false;
+			}
+			
+			public function toTempGroupTextState():void
+			{
+				propertyState.toTempGroupTextState();
+				normalToolbar.duplicateBtn.enabled = true;
+				normalToolbar.topLayerBtn.enabled = true;
+				normalToolbar.bottomLayerBtn.enabled = true;
+				normalToolbar.groupBtn.enabled = true;
+				normalToolbar.unGroupBtn.enabled = false;
+				normalToolbar.extensionBtn.enabled = false;
+			}
+			
+			private function initStates():void
+			{
+				//不同的属性类型
+				stageState = new StageState(this);
+				shapeState = new ShapeState(this);
+				textState = new TextState(this);
+				lineState= new LineState(this);
+				connectState = new ConnectState(this);
+				imageState = new ImageState(this);
+				groupState = new GroupState(this);
+				tempGroupState = new TempGroupState(this);
+				tempGroupLineState = new TempGroupLineState(this);
+				tempGroupTextState = new TempGroupTextState(this);
+				propertyState = stageState;
+				
+			}
+			public var propertyState:PropertyStateBase;
+			public var stageState:PropertyStateBase;
+			public var shapeState:PropertyStateBase;
+			public var textState:PropertyStateBase;
+			public var lineState:PropertyStateBase;
+			public var connectState:PropertyStateBase;
+			public var imageState:PropertyStateBase;
+			public var groupState:PropertyStateBase;
+			public var tempGroupState:PropertyStateBase;
+			public var tempGroupLineState:PropertyStateBase;
+			public var tempGroupTextState:PropertyStateBase;
+			
+
+			
+			//****************************************************
+			//
+			// 形状映射器控制
+			//
+			//****************************************************
+			
+			
+			//形状VO
+			[Bindable]
+			public var shapeVO:ElementVO;
+			
+			private var isShapeMapper:Boolean = true;
+			private var isLineMapper:Boolean = false;
+			
+			//映射器形状颜色状态
+			private function shapeMapper_BgSelectHandler(event:ShapeMapperEvent):void
+			{
+				isShapeMapper = true;
+				isLineMapper = false;
+				
+				shapeColor.visible = true;
+				shapeColor.includeInLayout = true;
+				
+				shapelineColor.visible = false;
+				shapelineColor.includeInLayout = false;
+				
+				thickSilder.visible = false;
+				thickSilder.includeInLayout = false;
+				
+				lineAlphaSlider.visible = false;
+				lineAlphaSlider.includeInLayout = false;
+				
+				alphaSlider.visible = true;
+				alphaSlider.includeInLayout = true;
+			}
+			
+			//点击映射器形状线条状态
+			private function shapeMapper_BorderSelectHandler(event:ShapeMapperEvent):void
+			{
+				isShapeMapper = false;
+				isLineMapper = true;
+				
+				shapelineColor.visible = true;
+				shapelineColor.includeInLayout = true;
+				
+				shapeColor.visible = false;
+				shapeColor.includeInLayout = false;
+				
+				thickSilder.visible = true;
+				thickSilder.includeInLayout = true;
+				
+				lineAlphaSlider.visible = true;
+				lineAlphaSlider.includeInLayout = true;
+				
+				alphaSlider.visible = false;
+				alphaSlider.includeInLayout = false;
+			}
+			
+			//改變x,y
+			protected function shapeMapper_changeXYHandler(event:ShapeMapperEvent):void
+			{
+				this.dispatchEvent(new PropertyPanelEvent(PropertyPanelEvent.CHANGE_XY));
+			}
+			
+			//改變w,h
+			protected function shapeMapper_changeWHMaooerHandler(event:ShapeMapperEvent):void
+			{
+				this.dispatchEvent(new events.PropertyPanelEvent(PropertyPanelEvent.CHANGE_WH));
+			}
+			
+			//图片锁定
+			protected function imageMapper_changeLockHandler(event:ShapeMapperEvent):void
+			{
+				this.dispatchEvent(new PropertyPanelEvent(PropertyPanelEvent.LOCK));
+			}
+			
+			//改變圖片x,y
+			protected function imageMapper_changeXYHandler(event:ShapeMapperEvent):void
+			{
+				this.dispatchEvent(new PropertyPanelEvent(PropertyPanelEvent.CHANGE_IMAGE_XY));
+			}
+			
+			//改變圖片w,h
+			protected function imageMapper_changeWHMaooerHandler(event:ShapeMapperEvent):void
+			{
+				this.dispatchEvent(new PropertyPanelEvent(PropertyPanelEvent.CHANGE_IMAGE_WH));
+			}
+			
+			//无状态
+			private function shapeMapper_SelectNoneHandler(event:ShapeMapperEvent):void
+			{
+			}
+			
+			public function unLock():void
+			{
+			}
+			
+			protected function shapeMapper_changeLockHandler(event:ShapeMapperEvent):void
+			{
+				this.dispatchEvent(new PropertyPanelEvent(PropertyPanelEvent.LOCK));
+			}
+			
+			private var _valueWidth:uint = 0;
+			private var _valueHeight:uint = 0;
+			private var _valueX:int = 0;
+			private var _valueY:int = 0;
+			
+			
+			[Bindable]
+			public function get valueWidth():uint 
+			{
+				return _valueWidth;
+			}
+			
+			public function set valueWidth(value:uint):void 
+			{
+				_valueWidth = value;
+			}
+			
+			[Bindable]
+			public function get valueHeight():uint 
+			{
+				return _valueHeight;
+			}
+			
+			public function set valueHeight(value:uint):void 
+			{
+				_valueHeight = value;
+			}
+			
+			[Bindable]
+			public function get valueX():uint 
+			{
+				return _valueX;
+			}
+			
+			public function set valueX(value:uint):void 
+			{
+				_valueX = value;
+			}
+			
+			[Bindable]
+			public function get valueY():uint 
+			{
+				return _valueY;
+			}
+			
+			public function set valueY(value:uint):void 
+			{
+				_valueY = value;
+			}
+			
+			//****************************************************
+			//
+			// 背景颜色
+			//
+			//****************************************************
+			private var _canvasBGcolor:uint = 0xFFFFFF;
+			
+			[Bindable]
+			public function get canvasBGcolor():uint 
+			{
+				return _canvasBGcolor;
+			}
+			
+			public function set canvasBGcolor(value:uint):void 
+			{
+				_canvasBGcolor = value;
+			}
+			
+			//****************************************************
+			//
+			// 文字属性
+			//
+			//****************************************************
+			[Bindable]
+			private var allFonts:ArrayCollection = new ArrayCollection([{fontName:"Aharoni",display:"Aharoni"},{fontName:"Andalus",display:"Andalus"},{fontName:"Arial",display:"Arial"},
+				{fontName:"Blackoak Std",display:"Blackoak Std"},{fontName:"Cambria",display:"Cambria"},{fontName:"Candara",display:"Candara"},
+				{fontName:"Chaparral Pro",display:"Chaparral Pro"},{fontName:"Charlemagne Std",display:"Charlemagne Std"},
+				{fontName:"Comic Sans MS",display:"Comic Sans MS"},{fontName:"Gabriola",display:"Gabriola"},{fontName:"Hobo Std",display:"Hobo Std"},
+				{fontName:"Impact",display:"Impact"},{fontName:"Lithos Pro Regular",display:"Lithos Pro Regular"},{fontName:"MV Boli",display:"MV Boli"},
+				{fontName:"Symbol",display:"Symbol"},{fontName:"FangSong",display:"仿宋"},{fontName:"STZhongsong",display:"华文中宋"},
+				{fontName:"STFangsong",display:"华文仿宋"},{fontName:"STSong",display:"华文宋体"},{fontName:"STCaiyun",display:"华文彩云"},
+				{fontName:"STXinwei",display:"华文新魏"},{fontName:"STKaiti",display:"华文楷体"},{fontName:"STHupo",display:"华文琥珀"},
+				{fontName:"STXihei",display:"华文细黑"},{fontName:"STXingkai",display:"华文行楷"},{fontName:"STLiti",display:"华文隶书"},
+				{fontName:"SimSun",display:"宋体"},{fontName:"YouYuan",display:"幼圆"},{fontName:"	Microsoft YaHei",display:"微软雅黑"},
+				{fontName:"NSimSun",display:"新宋体"},{fontName:"FZYaoti",display:"方正姚体"},{fontName:"FZShuTi",display:"方正舒体"},
+				{fontName:"KaiTi",display:"楷体"},{fontName:"LiSu",display:"隶书"},{fontName:"SimHei",display:"黑体"}
+			]);
+			
+			private function initFonts():void
+			{
+//				allFonts = Font.enumerateFonts(true); 获取电脑里的字体
+//				allFonts.sortOn("fontName", Array.CASEINSENSITIVE);
+//				systemFontList.source = allFonts;
+				fontFamily.labelField = "display";  
+				fontFamily.selectedIndex = 1;
+			}
+			
+			[Bindable]
+			public var fontSizeArr:ArrayCollection = new ArrayCollection(["8", "10", "12", "14","18","24","32","36","48","56","72"]);
+			
+			private var _fontSize:uint = 2;
+			
+			public function get fontSizec():uint 
+			{
+				return _fontSize;
+			}
+			
+			[Bindable]
+			public function set fontSizec(value:uint):void 
+			{
+				_fontSize = value;
+			}
+			
+			public function cleckTextSize():void
+			{
+				for (var i:int = 0; i < fontSizeArr.length; i++) 
+				{
+					if ((shapeVO as TextVO).size == fontSizeArr[i])
+					{
+						fontSizec = i;
+					}
+				}
+			}
+
+			
+			[Bindable]
+			public var alignArr:ArrayCollection = new ArrayCollection([icon_text_align_left, icon_text_align_center, icon_text_align_right]);
+			public var aligns:Array = ["left", "center", "right"];
+			
+			private var _alignc:uint = 0;
+			
+			public function get alignc():uint 
+			{
+				return _alignc;
+			}
+			
+			[Bindable]
+			public function set alignc(value:uint):void 
+			{
+				_alignc = value;
+			}
+			
+			public function cleckTextalign():void
+			{
+				for (var i:int = 0; i < aligns.length; i++) 
+				{
+					if ((shapeVO as TextVO).align == aligns[i])
+					{
+						alignc = i;
+					}
+				}
+			}
+			
+//			[Bindable]
+//			public var systemFontList:ArrayCollection = new ArrayCollection();
+			
+			private var _fontc:uint = 0;
+			
+			public function get fontc():uint 
+			{
+				return _fontc;
+			}
+			
+			[Bindable]
+			public function set fontc(value:uint):void 
+			{
+				_fontc = value;
+			}
+			
+			public function cleckTextfont():void
+			{
+				for (var i:int = 0; i < allFonts.length; i++) 
+				{
+					if ((shapeVO as TextVO).font == (allFonts[i] as Object).fontName)
+					{
+						fontc = i;
+					}
+				}
+			}
+			
+			//文字大小改变
+			protected function textSize_changeHandler(event:IndexChangeEvent):void
+			{
+				this.dispatchEvent(new TextFormatChangedEvent(TextFormatChangedEvent.FONT_SIZE_CHANGED));
+			}
+			
+			//文字对齐
+			protected function textAlign_changeHandler(event:IndexChangeEvent):void
+			{
+				this.dispatchEvent(new TextFormatChangedEvent(TextFormatChangedEvent.FONT_ALIGN_CHANGED));
+			}
+			
+			//字体样式
+			protected function textFamily_changeHandler(event:IndexChangeEvent):void
+			{
+				this.dispatchEvent(new TextFormatChangedEvent(TextFormatChangedEvent.FONT_FAMILY_CHANGED));
+			}
+			
+			//文字加粗操作
+			protected function fontBold_clickHandler(event:MouseEvent):void
+			{
+				this.dispatchEvent(new TextFormatChangedEvent(TextFormatChangedEvent.FONT_BOLD_CHANGED));
+			}
+			
+			//文字倾斜操作
+			protected function fontTilt_clickHandler(event:MouseEvent):void
+			{
+				this.dispatchEvent(new TextFormatChangedEvent(TextFormatChangedEvent.FONT_ITALIC_CHANGED));
+			}
+			
+			//下文字划线操作
+			protected function fontUnderline_clickHandler(event:MouseEvent):void
+			{
+				this.dispatchEvent(new TextFormatChangedEvent(TextFormatChangedEvent.FONT_UNDERLINE_CHANGED));
+			}
+			
+			//****************************************************
+			//
+			// 元素布局
+			//
+			//****************************************************
+			
+			protected function alignTopBtn_clickHandler(event:MouseEvent):void
+			{
+				this.dispatchEvent(new PropertyPanelEvent(PropertyPanelEvent.SHAPE_ALIGN_TOP));
+			}
+			
+			protected function alignMiddleHBtn_clickHandler(event:MouseEvent):void
+			{
+				this.dispatchEvent(new PropertyPanelEvent(PropertyPanelEvent.SHAPE_ALIGN_MIDDLE_H));
+			}
+			
+			protected function alignBottomBtn_clickHandler(event:MouseEvent):void
+			{
+				this.dispatchEvent(new PropertyPanelEvent(PropertyPanelEvent.SHAPE_ALIGN_BOTTOM));
+			}
+			
+			protected function alignLeftBtn_clickHandler(event:MouseEvent):void
+			{
+				this.dispatchEvent(new PropertyPanelEvent(PropertyPanelEvent.SHAPE_ALIGN_LEFT));
+			}
+			
+			protected function alignMiddleVBtn_clickHandler(event:MouseEvent):void
+			{
+				this.dispatchEvent(new PropertyPanelEvent(PropertyPanelEvent.SHAPE_ALIGN_MIDDLE_V));
+			}
+			
+			protected function alignRightBtn_clickHandler(event:MouseEvent):void
+			{
+				this.dispatchEvent(new PropertyPanelEvent(PropertyPanelEvent.SHAPE_ALIGN_RIGHT));
+			}
+			
+			
+			//****************************************************
+			//
+			// 颜色属性
+			//
+			//****************************************************
+			protected function shapeColor_changeColorHandler(event:ShapeMapperEvent):void
+			{
+				this.dispatchEvent(new PropertyPanelEvent(PropertyPanelEvent.CHANGE_PROPERTY_SHAPE_COLOR,true));
+			}
+			
+			
+			protected function canvasBGcolorPalette_changeColorHandler(event:ShapeMapperEvent):void
+			{
+				canvasBGcolor = canvasBGcolorPalette.colorValue;
+				this.dispatchEvent(new PropertyPanelEvent(PropertyPanelEvent.CHANGE_BG_COLOR));
+			}
+			
+			protected function shapelineColor_changeColorHandler(event:ShapeMapperEvent):void
+			{
+				this.dispatchEvent(new PropertyPanelEvent(PropertyPanelEvent.CHANGE_PROPERTY_SHAPE_LINE_COLOR,true));
+			}
+			
+			//****************************************************
+			//
+			// 线条属性
+			//
+			//****************************************************
+			
+			protected function lineArrow_changeArrowHandler(event:ShapeMapperEvent):void
+			{
+				this.dispatchEvent(new PropertyPanelEvent(PropertyPanelEvent.CHANGE_ARROW,true));
+			}
+			
+			
+			
+			protected function alphaSlider_changeHandler(event:Event):void
+			{
+				this.dispatchEvent(new PropertyPanelEvent(PropertyPanelEvent.CHANGE_ALPHA_SHAPE,true));
+			}
+			
+			protected function lineAlphaSlider_changeHandler(event:Event):void
+			{
+				this.dispatchEvent(new PropertyPanelEvent(PropertyPanelEvent.CHANGE_ALPHA_SHAPE_LINE,true));
+			}
+			
+			protected function thickSilder_changeHandler(event:Event):void
+			{
+				this.dispatchEvent(new PropertyPanelEvent(PropertyPanelEvent.CHANGE_THICKNESS,true));
+			}
+			
+			
+			
+		]]>
+	</fx:Script>
+
+	<panels:states>
+		<s:State name="stage"/>
+		<s:State name="shape"/>
+		<s:State name="text"/>
+		<s:State name="image"/>
+		<s:State name="group"/>
+		<s:State name="line"/>
+		<s:State name="connect"/>
+		<s:State name="tempGroup"/>
+		<s:State name="tempGroupText"/>
+		<s:State name="tempGroupLine"/>
+	</panels:states>
+	<panels:currentState>stage</panels:currentState>
+	
+	<s:VGroup width="100%" horizontalAlign="center">
+		
+		<!-- 背景色彩控件 -->
+		<palette:ColorPalette id="canvasBGcolorPalette" columNum="7" 
+							  visible="true" visible.shape="false" visible.group="false" visible.image="false" visible.line="false" visible.connect="false" visible.tempGroup="false" visible.text="false" visible.tempGroupLine="false" visible.tempGroupText="false"
+							  includeInLayout="{canvasBGcolorPalette.visible}"
+							  colorValue="{canvasBGcolor}" changeColor="canvasBGcolorPalette_changeColorHandler(event)"/>
+		
+		<!-- 形状、群组基础控件 -->
+		<components:ShapeMapper id="shapeMapper" width="100%" height="150" mode="0" selectStatus="bg"
+								visible="false" visible.shape="true" visible.group="true" visible.tempGroup="true" visible.stage="false" 
+								locked="{(shapeVO as ShapeVO).isLock}"
+								includeInLayout="{shapeMapper.visible}" includeInLayout.stage="false"
+								BgSelect="shapeMapper_BgSelectHandler(event)" BorderSelect="shapeMapper_BorderSelectHandler(event)" SelectNone="shapeMapper_SelectNoneHandler(event)" lockMapper="shapeMapper_changeLockHandler(event)"
+								valueHeight="{shapeVO.height}" valueWidth="{shapeVO.width}" valueX="{shapeVO.position.x}" valueY="{shapeVO.position.y}" changeXYMapper="shapeMapper_changeXYHandler(event)" changeWHMaooer="shapeMapper_changeWHMaooerHandler(event)"
+								/>
+		<components:Spliter id="shapeMapperSpliter" 
+							visible="{shapeMapper.visible}" visible.stage="false"
+							includeInLayout="{shapeMapper.visible}" includeInLayout.stage="false"/>
+		
+		<!-- 形状颜色控件 -->
+		<palette:ColorPalette id="shapeColor" columNum="7"
+							  visible="true" visible.stage="false" visible.image="false" visible.text="true" visible.connect="true" visible.line="true"
+							  includeInLayout="{shapeColor.visible}" includeInLayout.stage="false"
+							  colorValue="{(shapeVO as ShapeVO).color}" changeColor="shapeColor_changeColorHandler(event)"/>
+		<components:Spliter id="shapeColorSpliter" 
+							visible="{shapeColor.visible}" visible.stage="false"
+							includeInLayout="{shapeColor.visible}" includeInLayout.stage="false"/>
+		
+		<!-- 形状边框颜色控件 -->
+		<palette:ColorPalette id="shapelineColor" columNum="7" 
+							  visible="false" visible.stage="false" visible.image="false" visible.text="false" visible.line="false" visible.connect="false"
+							  includeInLayout="{shapelineColor.visible}" includeInLayout.stage="false"
+							  colorValue="{(shapeVO as ShapeVO).frameColor}" changeColor="shapelineColor_changeColorHandler(event)"/>
+		<components:Spliter id="shapelineColorSpliter" 
+							visible="{shapelineColor.visible}" visible.stage="false"
+							includeInLayout="{shapelineColor.visible}" includeInLayout.stage="false"/>
+		
+		<!-- 图片基础控件 -->
+		<components:ShapeMapper id="imageMapper" width="100%" height="150" mode="1"
+								visible="false" visible.image="true" visible.stage="false"
+								locked="{(shapeVO as ShapeVO).isLock}" SelectNone="shapeMapper_SelectNoneHandler(event)" lockMapper="imageMapper_changeLockHandler(event)"
+								includeInLayout="{imageMapper.visible}" includeInLayout.stage="false"
+								valueHeight="{shapeVO.height}" valueWidth="{shapeVO.width}" valueX="{shapeVO.position.x}" valueY="{shapeVO.position.y}" changeXYMapper="imageMapper_changeXYHandler(event)" changeWHMaooer="imageMapper_changeWHMaooerHandler(event)"/>
+		<components:Spliter id="imageMapperSpliter" 
+							visible="{imageMapper.visible}" visible.stage="false"
+							includeInLayout="{imageMapper.visible}" includeInLayout.stage="false"/>
+		
+		<!-- 箭头 -->
+		<components:LineStyleSelector id="lineArrow" leftArrow="{(shapeVO as LineVO).startArrow}" rightArrow="{(shapeVO as LineVO).endArrow}" width="100%" changeArrowMapper="lineArrow_changeArrowHandler(event)"
+									   visible="false" visible.line="true" visible.connect="true" visible.stage="false" visible.tempGroupLine="true"
+									   includeInLayout="{lineArrow.visible}" includeInLayout.stage="false"
+									   />	
+		<components:Spliter id="lineArrowSpliter" 
+							visible="{lineArrow.visible}" visible.stage="false"
+							includeInLayout="{lineArrow.visible}" includeInLayout.stage="false"/>
+		
+		
+		<!-- 线条粗细 -->
+		<components:ThicknessSliderBar id="thickSilder" value.shape="{(shapeVO as ShapeVO).thickness}" value.line="{(shapeVO as LineVO).thickness}" width="100%" change="thickSilder_changeHandler(event)"
+									   visible="false" visible.line="true" visible.stage="false" visible.connect="true" visible.text="false" visible.image="false" visible.tempGroupLine="true"
+									   includeInLayout="{thickSilder.visible}" includeInLayout.stage="false"/>	
+		<components:Spliter id="thickSilderSpliter" 
+							visible="{thickSilder.visible}" visible.stage="false"
+							includeInLayout="{thickSilder.visible}" includeInLayout.stage="false"/>
+		
+		<!-- 透明度 -->
+		<components:PercentSlider id="alphaSlider" width="100%" value="{shapeVO.alpha}" change="alphaSlider_changeHandler(event)"
+								  visible.stage="false" visible.text="true"
+								  includeInLayout="{alphaSlider.visible}" includeInLayout.stage="false"/>
+		<components:Spliter id="alphaSliderSpliter" 
+							visible="{alphaSlider.visible}" visible.stage="false"
+							includeInLayout="{alphaSlider.visible}" includeInLayout.stage="false"/>
+		
+		<!-- 形状边框透明度 -->
+		<components:PercentSlider id="lineAlphaSlider" width="100%" value="{(shapeVO as ShapeVO).frameAlpha}" change="lineAlphaSlider_changeHandler(event)"
+								  visible="false" visible.stage="false" visible.text="false" 
+								  includeInLayout="{lineAlphaSlider.visible}" includeInLayout.stage="false"/>
+		<components:Spliter id="lineAlphaSliderSpliter" 
+							visible="{lineAlphaSlider.visible}" visible.stage="false"
+							includeInLayout="{lineAlphaSlider.visible}" includeInLayout.stage="false"/>
+
+		<!--r 临时群组对齐 -->
+		<s:HGroup id="tempAlign"  gap="2" horizontalAlign="left" 
+				   visible="false" visible.tempGroup="true" includeInLayout="false" includeInLayout.tempGroup="true" includeInLayout.tempGroupLine="true" includeInLayout.tempGroupText="true" visible.stage="false" includeInLayout.stage="false" visible.tempGroupLine="true" visible.tempGroupText="true">
+			<components:ToolbarButton id="alignTopBtn" toolTip="上对齐" image="{icon_align_top}" overImage="{icon_align_top_over}"
+									  click="alignTopBtn_clickHandler(event)"/>
+			<components:ToolbarButton id="alignMiddleHBtn" toolTip="横居中" image="{icon_align_middle_h}" overImage="{icon_align_middle_h_over}"
+									  click="alignMiddleHBtn_clickHandler(event)"/>
+			<components:ToolbarButton id="alignBottomBtn" toolTip="下对齐" image="{icon_align_bottom}" overImage="{icon_align_bottom_over}"
+									  click="alignBottomBtn_clickHandler(event)"/>
+			<components:ToolbarButton id="alignLeftBtn" toolTip="左对齐" image="{icon_align_left}" overImage="{icon_align_left_over}"
+									  click="alignLeftBtn_clickHandler(event)"/>
+			<components:ToolbarButton id="alignMiddleVBtn" toolTip="竖居中" image="{icon_align_middle_v}" overImage="{icon_align_middle_v_over}"
+									  click="alignMiddleVBtn_clickHandler(event)"/>
+			<components:ToolbarButton id="alignRightBtn" toolTip="右对齐" image="{icon_align_right}" overImage="{icon_align_right_over}"
+									  click="alignRightBtn_clickHandler(event)"/>
+		</s:HGroup>
+		<components:Spliter visible="{tempAlign.visible}" includeInLayout="{tempAlign.visible}" visible.stage="false" includeInLayout.stage="false"/>
+		
+		<!-- 文字属性 -->
+		<s:HGroup id="textProperty1" gap="2" horizontalAlign="left" 
+				  visible="false" visible.text="true" includeInLayout="false" includeInLayout.text="true" visible.stage="false" includeInLayout.stage="false" visible.tempGroupText="true" includeInLayout.tempGroupText="true">
+			<components:ItemList id="fontFamily" width="200"
+								 toolTip="字体样式" dataProvider="{allFonts}" selectedIndex="{fontc}" change="textFamily_changeHandler(event)"/>
+		</s:HGroup>
+		<components:Spliter visible="{textProperty1.visible}" includeInLayout="{textProperty1.visible}" visible.stage="false" includeInLayout.stage="false"/>
+		
+		<!-- 文字属性2 -->
+		<s:HGroup id="textProperty2"  gap="2" horizontalAlign="left" 
+				   visible="false" visible.text="true" includeInLayout="false" includeInLayout.text="true" visible.stage="false" includeInLayout.stage="false" visible.tempGroupText="true" includeInLayout.tempGroupText="true">
+			<components:ItemList id="fontSize" toolTip="字体大小" dataProvider="{fontSizeArr}" selectedIndex="{fontSizec}" 
+								 change="textSize_changeHandler(event)"/>
+			<components:ItemList id="fontAlign" toolTip="文字对齐" dataProvider="{alignArr}" selectedIndex="{alignc}" 
+								 change="textAlign_changeHandler(event)"/>
+			<components:ToolbarButton id="fontBoldBtn" toolTip="文字加粗" selected="{(shapeVO as TextVO).bold}"
+									  image="{icon_text_bold}" overImage="{icon_text_bold_over}" selectedImage="{icon_text_bold_selected}" 
+									  click="fontBold_clickHandler(event)"/>
+			<components:ToolbarButton id="fontTiltBtn" toolTip="文字倾斜" selected="{(shapeVO as TextVO).italic}"
+									  image="{icon_text_italic}" overImage="{icon_text_italic_over}" selectedImage="{icon_text_italic_selected}" 
+									  click="fontTilt_clickHandler(event)"/>
+			<components:ToolbarButton id="fontUnderlineBtn" toolTip="下划线" selected="{(shapeVO as TextVO).underline}"
+									  image="{icon_text_underline}" overImage="{icon_text_underline_over}" selectedImage="{icon_text_underline_selected}" 
+									  click="fontUnderline_clickHandler(event)"/>
+		</s:HGroup>
+		<components:Spliter visible="{textProperty2.visible}" includeInLayout="{textProperty2.visible}" visible.stage="false" includeInLayout.stage="false"/>
+		
+		<!-- 通用条控件 -->
+		<components:NormalToolbar id="normalToolbar" 
+								  visible="true" visible.stage="false" 
+								  includeInLayout="{normalToolbar.visible}" includeInLayout.stage="false"/>
+	</s:VGroup>
+	
+</panels:PanelBase>
+

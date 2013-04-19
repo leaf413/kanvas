@@ -1,0 +1,28 @@
+<?xml version="1.0" encoding="utf-8"?>
+<s:Skin xmlns:fx="http://ns.adobe.com/mxml/2009" xmlns:s="library://ns.adobe.com/flex/spark" 
+    xmlns:fb="http://ns.adobe.com/flashbuilder/2009" alpha.disabled="0.5" xmlns:components="components.*">
+	
+	<fx:Metadata>[HostComponent("panels.ToolBarUI")]</fx:Metadata>
+
+    <s:states>
+        <s:State name="normal" />
+        <s:State name="disabled" />
+    </s:states>
+	
+	<fx:Script>
+		<![CDATA[
+			import knowledgeMapEditor.controlIcons.*;
+		]]>
+	</fx:Script>
+    
+    <s:BitmapImage source="{tool_bar_ui}" width="100%" height="100%"/>
+	
+    <s:Group id="contentGroup" left="15" right="15" top="30" bottom="15" minWidth="0" minHeight="0">
+        <s:layout>
+            <s:BasicLayout />
+        </s:layout>
+    </s:Group>
+	
+	<components:IconButton id="arrowBtn" toolTip="选择" x="79" y="9" image="{icon_select_arrow}" overImage="{icon_select_arrow_over}" selectedImage="{icon_select_arrow_select}" />
+
+</s:Skin>

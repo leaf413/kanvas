@@ -1,0 +1,40 @@
+<?xml version="1.0" encoding="utf-8"?>
+<s:Skin xmlns:fx="http://ns.adobe.com/mxml/2009" 
+		xmlns:s="library://ns.adobe.com/flex/spark" 
+		xmlns:mx="library://ns.adobe.com/flex/mx" width="27" height="27" alpha.disabled="0.5">
+	<!-- host component -->
+	<fx:Metadata>
+		[HostComponent("components.ToolbarButton")]
+	</fx:Metadata>
+	
+	<fx:Script>
+		<![CDATA[
+			import knowledgeMapEditor.controlIcons.*;
+		]]>
+	</fx:Script>
+	
+	<!-- states -->
+	<s:states>
+		<s:State name="disabled" />
+		<s:State name="down" />
+		<s:State name="over" />
+		<s:State name="up" />
+	</s:states>
+	
+	<s:transitions>
+		<s:Transition fromState="up" toState="over" autoReverse="true">
+			<s:Parallel>
+				<s:Parallel target="{iconDisplay}">
+					<s:Fade duration="500"/>
+				</s:Parallel>
+			</s:Parallel>
+		</s:Transition>
+	</s:transitions>
+	
+	<!-- SkinParts
+	name=iconDisplay, type=spark.primitives.BitmapImage, required=false
+	name=labelDisplay, type=spark.core.IDisplayText, required=false
+	-->
+	<s:BitmapImage id="bg" source="{toolbar_button_bg}" source.over="{toolbar_button_bg_over}" source.down="{toolbar_button_bg_down}"/>
+	<s:BitmapImage id="iconDisplay"/>
+</s:Skin>

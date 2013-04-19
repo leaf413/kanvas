@@ -1,0 +1,86 @@
+<?xml version="1.0" encoding="utf-8"?>
+<s:Skin xmlns:fx="http://ns.adobe.com/mxml/2009" 
+		xmlns:s="library://ns.adobe.com/flex/spark" 
+		xmlns:mx="library://ns.adobe.com/flex/mx" alpha.disabled="0.5">
+	<!-- host component -->
+	<fx:Metadata>
+		[HostComponent("components.ThicknessSliderBar")]
+	</fx:Metadata>
+	<fx:Script>
+		<![CDATA[
+			import knowledgeMapEditor.controlIcons.*;
+		]]>
+	</fx:Script>
+	
+	<!-- states -->
+	<s:states>
+		<s:State name="disabled" />
+		<s:State name="normal" />
+	</s:states>
+	
+	<fx:Style>
+		@namespace s "library://ns.adobe.com/flex/spark";
+		@namespace mx "library://ns.adobe.com/flex/mx";
+		
+		.percentLabel
+		{
+			color: #9fa4a8;
+			fontWeight:bold;
+			fontSize: 10pt;
+		}
+	</fx:Style>
+	
+	<fx:Declarations>
+		<fx:Array id="_labelFilters">
+			<s:DropShadowFilter alpha="0.7" distance="1" strength="1" />
+		</fx:Array>
+	</fx:Declarations>
+	
+	<fx:Script>
+		<![CDATA[
+			private function _updateHandler(event:Event):void{
+				triangleBar.data = triangle.data = 'M 0 12 L ' + (slidegroup.width - 2) + ' 12 L ' + (slidegroup.width - 2) + ' 2 L 2 12';
+			}
+		]]>
+	</fx:Script>
+	
+	<!-- SkinParts
+	name=dataTip, type=mx.core.IFactory, required=false
+	name=track, type=spark.components.Button, required=false
+	name=bar, type=spark.primitives.BitmapImage, required=false
+	name=thumb, type=spark.components.Button, required=false
+	-->
+	<s:Group width="100%">
+		<s:layout>
+			<s:HorizontalLayout verticalAlign="middle" gap="5"/>
+		</s:layout>
+		<s:Label text="细" width="28" textAlign="right" styleName="percentLabel" filters="{_labelFilters}"/>
+		<s:Group id="slidegroup" width="100%" updateComplete="_updateHandler(event)">
+			<s:Path id="triangleBar">
+				<s:fill>
+					<s:LinearGradient rotation="90">
+						<s:GradientEntry color="0x25282a"/>
+						<s:GradientEntry color="0x232628"/>
+					</s:LinearGradient>
+				</s:fill>
+				<s:filters>
+					<fx:Array>
+						<s:DropShadowFilter inner="true" color="0x000000" alpha="0.5" strength="1" blurX="1" blurY="1" distance="1"/>
+						<s:DropShadowFilter angle="-135" color="0xFFFFFF" alpha="0.2" strength="1" blurX="1" blurY="1" distance="1" inner="true"/>
+					</fx:Array>
+				</s:filters>
+			</s:Path>
+			<s:Path id="triangle">
+				<s:fill>
+					<s:LinearGradient rotation="90">
+						<s:GradientEntry color="0x3d7dc6"/>
+						<s:GradientEntry color="0x29649a"/>
+					</s:LinearGradient>
+				</s:fill>
+			</s:Path>
+			<s:Button id="track" height="13" width="100%" verticalCenter="-1" alpha="0" />
+			<s:Button id="thumb" skinClass="skins.SliderThumbSkin" height="16" width="16" verticalCenter="0" left="0" />
+		</s:Group>
+		<s:Label text="粗" width="28" textAlign="left" styleName="percentLabel" filters="{_labelFilters}"/>
+	</s:Group>
+</s:Skin>

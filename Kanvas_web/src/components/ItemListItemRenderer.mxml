@@ -1,0 +1,43 @@
+<?xml version="1.0" encoding="utf-8"?>
+<s:ItemRenderer xmlns:fx="http://ns.adobe.com/mxml/2009" 
+				xmlns:s="library://ns.adobe.com/flex/spark" 
+				xmlns:mx="library://ns.adobe.com/flex/mx" creationComplete="init()" width="100%" height="100%">
+	<fx:Declarations>
+		<!-- Place non-visual elements (e.g., services, value objects) here -->
+	</fx:Declarations>
+	<fx:Script>
+		<![CDATA[
+			import knowledgeMapEditor.controlIcons.*;
+			
+			override public function set data(value:Object):void{
+				super.data = value;
+				if(value is Class){
+					iconDisplay.source = value;
+					iconCnt.visible = true;
+					labelCnt.visible = false;
+				}else{
+					labelCnt.visible = true;
+					iconCnt.visible = false;
+				}
+			}
+			
+			private function init():void{
+				setStyle('selectionColor', 0x155bb0);
+			}
+		]]>
+	</fx:Script>
+	<s:Rect top="0" width="100%" height="2">
+		<s:fill>
+			<s:BitmapFill source="{item_list_spliter}" fillMode="repeat" />
+		</s:fill>
+	</s:Rect>
+	<s:Group id="iconCnt" width="100%" height="100%">
+		<s:BitmapImage id="iconDisplay" horizontalCenter="0" verticalCenter="0"/>
+	</s:Group>
+	<s:Group id="labelCnt">
+		<s:layout>
+			<s:VerticalLayout paddingLeft="8" paddingRight="8" paddingTop="10" paddingBottom="5" gap="0" />
+		</s:layout>
+		<s:Label id="labelDisplay" color="0x1b1b1b"/>
+	</s:Group>
+</s:ItemRenderer>

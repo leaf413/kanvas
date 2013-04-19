@@ -1,0 +1,53 @@
+<?xml version="1.0" encoding="utf-8"?>
+<panels:PanelBase xmlns:fx="http://ns.adobe.com/mxml/2009" 
+				  xmlns:s="library://ns.adobe.com/flex/spark" 
+				  xmlns:mx="library://ns.adobe.com/flex/mx" xmlns:panels="panels.*" 
+				  xmlns:components="components.*"
+				  >
+	
+	<fx:Script>
+		<![CDATA[
+			import events.InsertPanelEvent;
+			
+			import knowledgeMapEditor.controlIcons.icon_import;
+			import knowledgeMapEditor.controlIcons.icon_import_file;
+			import knowledgeMapEditor.controlIcons.icon_import_file_over;
+			import knowledgeMapEditor.controlIcons.icon_import_image;
+			import knowledgeMapEditor.controlIcons.icon_import_image_over;
+			import knowledgeMapEditor.controlIcons.icon_new_file;
+			import knowledgeMapEditor.controlIcons.icon_new_file_over;
+			import knowledgeMapEditor.controlIcons.icon_template;
+			import knowledgeMapEditor.controlIcons.icon_template_over;
+			protected function importFileBtn_clickHandler(event:MouseEvent):void
+			{
+				this.dispatchEvent(new InsertPanelEvent(InsertPanelEvent.IMPORT_FILE));
+			}
+			
+			protected function insertImageBtn_clickHandler(event:MouseEvent):void
+			{
+				this.dispatchEvent(new InsertPanelEvent(InsertPanelEvent.INSERT_IMAGE));
+			}
+			
+			protected function importModelBtn_clickHandler(event:MouseEvent):void
+			{
+				this.dispatchEvent(new InsertPanelEvent(InsertPanelEvent.IMPORT_MODEL));
+			}
+			
+			protected function newFileBtn_clickHandler(event:MouseEvent):void
+			{
+				this.dispatchEvent(new InsertPanelEvent(InsertPanelEvent.NEW_FILE));
+			}
+			
+		]]>
+	</fx:Script>
+	
+	<s:Group>
+		<s:layout>
+			<s:VerticalLayout gap="5" horizontalAlign="center"/>
+		</s:layout>
+		<components:IconButton id="importFileBtn" toolTip="导入源文件" image="{icon_import_file}" overImage="{icon_import_file_over}" click="importFileBtn_clickHandler(event)"/>
+		<components:IconButton id="insertImageBtn" toolTip="插入图片" image="{icon_import_image}" overImage="{icon_import_image_over}" click="insertImageBtn_clickHandler(event)"/>
+		<!--<components:IconButton id="importModelBtn" toolTip="插入模板" image="{icon_template}" overImage="{icon_template_over}" click="importModelBtn_clickHandler(event)" enabled="false"/>-->
+		<!--<components:IconButton id="newFileBtn" toolTip="新建空文件" image="{icon_new_file}" overImage="{icon_new_file_over}" click="newFileBtn_clickHandler(event)"/>-->
+	</s:Group>
+</panels:PanelBase>

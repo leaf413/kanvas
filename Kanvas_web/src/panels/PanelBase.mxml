@@ -1,0 +1,55 @@
+<?xml version="1.0" encoding="utf-8"?>
+<s:SkinnableContainer xmlns:fx="http://ns.adobe.com/mxml/2009"
+					  xmlns:s="library://ns.adobe.com/flex/spark"
+					  xmlns:mx="library://ns.adobe.com/flex/mx"
+					  skinClass="skins.PanelBaseSkin"
+					  minWidth="50" minHeight="50">
+	<fx:Declarations>
+		<!-- Place non-visual elements (e.g., services, value objects) here -->
+	</fx:Declarations>
+	<fx:Script>
+		<![CDATA[
+			import spark.primitives.BitmapImage;
+			
+			[SkinPart(required="false")]
+			public var arrow:BitmapImage;
+			
+			private var _arrowPosition:String = "center";
+
+			[Bindable]
+			[Inspectable(category="Layout Constraints", enumeration="left, center, right", defaultValue="center")]
+			public function get arrowPosition():String
+			{
+				return _arrowPosition;
+			}
+
+			public function set arrowPosition(value:String):void
+			{
+				_arrowPosition = value;
+				invalidateProperties();
+			}
+			
+			override protected function commitProperties():void{
+				super.commitProperties();
+				
+				switch(arrowPosition){
+					case 'left':
+						arrow.left = 25;
+						arrow.right = null;
+						arrow.horizontalCenter = null;
+						break;
+					case 'right':
+						arrow.left = null;
+						arrow.right = 25;
+						arrow.horizontalCenter = null;
+						break;
+					case 'center':
+						arrow.left = null;
+						arrow.right = null;
+						arrow.horizontalCenter = 0;
+						break;
+				}
+			}
+		]]>
+	</fx:Script>
+</s:SkinnableContainer>

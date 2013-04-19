@@ -1,0 +1,39 @@
+<?xml version="1.0" encoding="utf-8"?>
+<panels:PanelBase xmlns:fx="http://ns.adobe.com/mxml/2009" 
+				  xmlns:s="library://ns.adobe.com/flex/spark" 
+				  xmlns:mx="library://ns.adobe.com/flex/mx" xmlns:panels="panels.*" xmlns:components="components.*">
+	
+	<fx:Script>
+		<![CDATA[
+			import events.ConnectorPanelEvent;
+			
+			import knowledgeMapEditor.controlIcons.icon_line_connect;
+			import knowledgeMapEditor.controlIcons.icon_line_connect_over;
+			import knowledgeMapEditor.controlIcons.icon_line_straight;
+			import knowledgeMapEditor.controlIcons.icon_line_straight_over;
+			
+			protected function lineBtn_clickHandler(event:MouseEvent):void
+			{
+				this.dispatchEvent(new ConnectorPanelEvent(ConnectorPanelEvent.LINE));
+			}
+			
+			protected function connector_clickHandler(event:MouseEvent):void
+			{
+				this.dispatchEvent(new ConnectorPanelEvent(ConnectorPanelEvent.CONNECT));
+			}
+			
+		]]>
+	</fx:Script>
+	
+	<fx:Declarations>
+		<!-- 将非可视元素（例如服务、值对象）放在此处 -->
+	</fx:Declarations>
+	
+	<s:Group>
+		<s:layout>
+			<s:VerticalLayout gap="1" horizontalAlign="left" paddingLeft="1" paddingBottom="1" paddingRight="1" paddingTop="1"/>
+		</s:layout>
+		<components:IconButton id="lineBtn" toolTip="线条(L)" image="{icon_line_straight}" overImage="{icon_line_straight_over}" click="lineBtn_clickHandler(event)"/>
+		<!--<components:IconButton id="connector" toolTip="关系线" image="{icon_line_connect}" overImage="{icon_line_connect_over}" click="connector_clickHandler(event)" enabled="false"/>-->
+	</s:Group>
+</panels:PanelBase>

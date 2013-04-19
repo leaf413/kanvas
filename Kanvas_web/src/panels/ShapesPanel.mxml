@@ -1,0 +1,168 @@
+<?xml version="1.0" encoding="utf-8"?>
+<panels:PanelBase xmlns:fx="http://ns.adobe.com/mxml/2009" 
+				  xmlns:s="library://ns.adobe.com/flex/spark" 
+				  xmlns:mx="library://ns.adobe.com/flex/mx" xmlns:panels="panels.*"
+				  xmlns:components="components.*"
+				  rollOver="panelbase1_mouseOverHandler(event)" rollOut="panelbase1_mouseOutHandler(event)"
+				  >
+	
+	<fx:Script>
+		<![CDATA[
+			import events.ShapePanelEvent;
+			
+			import knowledgeMapEditor.controlIcons.icon_shape_arrow;
+			import knowledgeMapEditor.controlIcons.icon_shape_arrow_over;
+			import knowledgeMapEditor.controlIcons.icon_shape_circle;
+			import knowledgeMapEditor.controlIcons.icon_shape_circle_over;
+			import knowledgeMapEditor.controlIcons.icon_shape_double_arrow;
+			import knowledgeMapEditor.controlIcons.icon_shape_double_arrow_over;
+			import knowledgeMapEditor.controlIcons.icon_shape_hexagon;
+			import knowledgeMapEditor.controlIcons.icon_shape_hexagon_over;
+			import knowledgeMapEditor.controlIcons.icon_shape_polygon;
+			import knowledgeMapEditor.controlIcons.icon_shape_polygon_over;
+			import knowledgeMapEditor.controlIcons.icon_shape_square;
+			import knowledgeMapEditor.controlIcons.icon_shape_square_over;
+			import knowledgeMapEditor.controlIcons.icon_shape_star;
+			import knowledgeMapEditor.controlIcons.icon_shape_star_over;
+			import knowledgeMapEditor.controlIcons.icon_shape_trapezia;
+			import knowledgeMapEditor.controlIcons.icon_shape_trapezia_over;
+			import knowledgeMapEditor.controlIcons.icon_shape_triangle;
+			import knowledgeMapEditor.controlIcons.icon_shape_triangle_over;
+			
+			import spark.components.Image;
+			
+			import util.type.ElementTypes;
+			protected function CircleShapeBtn_mouseDownHandler(event:MouseEvent):void
+			{
+				selectShapeButtonHandler(event.currentTarget as IconButton, ElementTypes.CIRCLE);
+			}
+			
+			protected function polygonShapeBtn_mouseDownHandler(event:MouseEvent):void
+			{
+				selectShapeButtonHandler(event.currentTarget as IconButton, ElementTypes.POLYGON);
+			}
+			
+			protected function RectShapeBtn_mouseDownHandler(event:MouseEvent):void
+			{
+				selectShapeButtonHandler(event.currentTarget as IconButton, ElementTypes.RECT);
+			}
+			
+			protected function StartShapeBtn_mouseDownHandler(event:MouseEvent):void
+			{
+				selectShapeButtonHandler(event.currentTarget as IconButton, ElementTypes.STAR);
+			}
+			
+			protected function TriangleShapeBtn_mouseDownHandler(event:MouseEvent):void
+			{
+				selectShapeButtonHandler(event.currentTarget as IconButton, ElementTypes.TRIANGLE);
+			}
+			
+			protected function TrapezoidalShapeBtn_mouseDownHandler(event:MouseEvent):void
+			{
+				selectShapeButtonHandler(event.currentTarget as IconButton, ElementTypes.TRAPEZOIDAL);
+			}
+			
+			protected function ArrowShapeBtn_mouseDownHandler(event:MouseEvent):void
+			{
+				selectShapeButtonHandler(event.currentTarget as IconButton, ElementTypes.ARROW);
+			}
+			
+			protected function DoubleArrowShapeBtn_mouseDownHandler(event:MouseEvent):void
+			{
+				selectShapeButtonHandler(event.currentTarget as IconButton, ElementTypes.DOUBLEARROW);
+			}
+			
+			protected function hexagonShapeBtn_mouseDownHandler(event:MouseEvent):void
+			{
+				selectShapeButtonHandler(event.currentTarget as IconButton, ElementTypes.HEXAGON);
+			}
+			
+			private function selectShapeButtonHandler(tar:IconButton, type:String):void
+			{
+				selectNull();
+				
+				
+				tar.selected = true;
+				_currentType = type;
+//				var vo:CustomShapeProxyVO = new CustomShapeProxyVO();
+//				var bitmapData:BitmapData = new BitmapData(tar.iconDisplay.width, tar.iconDisplay.height);
+//				bitmapData.draw(tar.iconDisplay);
+//				vo.icon = tar.iconDisplay;
+//				vo.type = type;
+//				this.dispatchEvent(new ShapePanelEvent(ShapePanelEvent.CREAT_CUSTOMSHAPE, vo));
+			}
+			
+			private var _currentType:String = "circle";
+			
+			protected function hexagonShapeBtn_doubleClickHandler(event:MouseEvent):void
+			{
+//				this.dispatchEvent(new ShapePanelEvent(ShapePanelEvent.CREAT_CUSTOMSHAPE, ElementTypes.HEXAGON));
+			}
+			
+			public function selectNull():void
+			{
+				CircleShapeBtn.selected = false;
+				polygonShapeBtn.selected = false;
+				RectShapeBtn.selected = false;
+				StartShapeBtn.selected = false;
+				TriangleShapeBtn.selected = false;
+				TrapezoidalShapeBtn.selected = false;
+				ArrowShapeBtn.selected = false;
+				DoubleArrowShapeBtn.selected = false;
+				hexagonShapeBtn.selected = false;
+			}
+			
+			public function get currentSelectedType():String 
+			{
+				
+				return _currentType;
+			}
+			
+			protected function panelbase1_mouseOverHandler(event:MouseEvent):void
+			{
+//				this.dispatchEvent(new ScaleControlEvent(ScaleControlEvent.SHOW_SCALE_CONTROL_ICON, ScaleControlTypeNames.SELECT));
+			}
+			
+			protected function panelbase1_mouseOutHandler(event:MouseEvent):void
+			{
+//				this.dispatchEvent(new ScaleControlEvent(ScaleControlEvent.RETURN_TO_SCALE_ICON));
+			}
+			
+		]]>
+	</fx:Script>
+	
+	<fx:Declarations>
+		<!-- 将非可视元素（例如服务、值对象）放在此处 -->
+	</fx:Declarations>
+	<s:Group>
+		<s:layout>
+			<s:HorizontalLayout gap="1" verticalAlign="top" paddingLeft="1" paddingBottom="1" paddingRight="1" paddingTop="1"/>
+		</s:layout>
+		<s:Group>
+			<s:layout>
+				<s:VerticalLayout gap="1" horizontalAlign="left" paddingLeft="1" paddingBottom="1" paddingRight="1" paddingTop="1"/>
+			</s:layout>
+			<components:IconButton id="CircleShapeBtn" toolTip="圆形" image="{icon_shape_circle}" selectedImage="{icon_shape_circle_over}" overImage="{icon_shape_circle_over}" mouseDown="CircleShapeBtn_mouseDownHandler(event)" selected="true"/>
+			<components:IconButton id="polygonShapeBtn" toolTip="多边形" image="{icon_shape_polygon}" selectedImage="{icon_shape_polygon_over}" overImage="{icon_shape_polygon_over}" mouseDown="polygonShapeBtn_mouseDownHandler(event)"/>
+			<components:IconButton id="RectShapeBtn" toolTip="正方形" image="{icon_shape_square}" selectedImage="{icon_shape_square_over}" overImage="{icon_shape_square_over}" mouseDown="RectShapeBtn_mouseDownHandler(event)"/>
+		</s:Group>
+	
+		<s:Group>
+			<s:layout>
+				<s:VerticalLayout gap="1" horizontalAlign="left" paddingLeft="1" paddingBottom="1" paddingRight="1" paddingTop="1"/>
+			</s:layout>
+		<components:IconButton id="StartShapeBtn" toolTip="五角星" image="{icon_shape_star}" selectedImage="{icon_shape_star_over}" overImage="{icon_shape_star_over}" mouseDown="StartShapeBtn_mouseDownHandler(event)"/>
+		<components:IconButton id="TriangleShapeBtn" toolTip="三角形" image="{icon_shape_triangle}" selectedImage="{icon_shape_triangle_over}" overImage="{icon_shape_triangle_over}" mouseDown="TriangleShapeBtn_mouseDownHandler(event)"/>
+		<components:IconButton id="TrapezoidalShapeBtn" toolTip="梯形" image="{icon_shape_trapezia}" selectedImage="{icon_shape_trapezia_over}" overImage="{icon_shape_trapezia_over}" mouseDown="TrapezoidalShapeBtn_mouseDownHandler(event)"/>
+		</s:Group>
+		
+		<s:Group>
+			<s:layout>
+				<s:VerticalLayout gap="1" horizontalAlign="left" paddingLeft="1" paddingBottom="1" paddingRight="1" paddingTop="1"/>
+			</s:layout>
+		<components:IconButton id="ArrowShapeBtn" toolTip="箭头形状" image="{icon_shape_arrow}" selectedImage="{icon_shape_arrow_over}" overImage="{icon_shape_arrow_over}" mouseDown="ArrowShapeBtn_mouseDownHandler(event)"/>
+		<components:IconButton id="DoubleArrowShapeBtn" toolTip="双箭头" image="{icon_shape_double_arrow}" selectedImage="{icon_shape_double_arrow_over}" overImage="{icon_shape_double_arrow_over}" mouseDown="DoubleArrowShapeBtn_mouseDownHandler(event)"/>
+		<components:IconButton id="hexagonShapeBtn" toolTip="六边形" image="{icon_shape_hexagon}" selectedImage="{icon_shape_hexagon_over}" overImage="{icon_shape_hexagon_over}" mouseDown="hexagonShapeBtn_mouseDownHandler(event)"/>
+		</s:Group>
+	</s:Group>
+</panels:PanelBase>

@@ -1,0 +1,184 @@
+<?xml version="1.0" encoding="utf-8"?>
+<s:Skin xmlns:fx="http://ns.adobe.com/mxml/2009"
+		xmlns:s="library://ns.adobe.com/flex/spark"
+		xmlns:mx="library://ns.adobe.com/flex/mx"
+		minWidth="120"
+		height="90"
+		xmlns:components="components.*"
+		>
+	<!-- host component -->
+	<fx:Metadata>
+		[HostComponent("components.ShapeMapper")]
+	</fx:Metadata>
+
+	<s:states>
+		<s:State name="normal"/>
+		<s:State name="editXY"/>
+		<s:State name="editWidth"/>
+		<s:State name="editHeight"/>
+	</s:states>
+
+	<fx:Style>
+		@namespace s "library://ns.adobe.com/flex/spark";
+		@namespace mx "library://ns.adobe.com/flex/mx";
+		@namespace components "components.*";
+		
+		@font-face
+		{
+			src:url("madfont.ttf");
+			font-family:madfont;
+		}
+		
+		.labelStyle
+		{
+			fontFamily: "madfont";
+			color: #000000;
+			fontSize: 11pt;
+		}
+		
+		.inputStyle
+		{
+			fontFamily: "madfont";
+			fontSize: 12pt;
+		}
+	</fx:Style>
+
+	<fx:Script>
+		<![CDATA[
+			import knowledgeMapEditor.controlIcons.*;
+		]]>
+	</fx:Script>
+
+	<s:BitmapImage source="{property_selector_bg}"
+				   width="100%"
+				   height="100%"/>
+	<s:Group top="8"
+			  right="10"
+			  left="10"
+			  bottom="10">
+		
+		<s:layout>
+			<s:BasicLayout />
+		</s:layout>
+
+		<!-- 颜色、边框、尺寸设置 -->
+		<s:Group top="14" width="100%"
+				 height="100%">
+			<s:ToggleButton id="borderSelectBtn"
+							toolTip="边框"
+							width="100%"
+							height="100%"
+							skinClass="skins.ShapeMapperBorderSelectSkin"/>
+			<s:ToggleButton id="bgSelectBtn"
+							toolTip="{hostComponent.mode == '1' ? '图片' : '填充'}"
+							left="9"
+							right="9"
+							top="9"
+							bottom="9"/>
+			<s:Group verticalCenter="0"
+					 horizontalCenter="0">
+				<components:IconButton id="lockOpenBtn"
+									   toolTip="锁定"
+									   image="{icon_lock_open}"
+									   overImage="{icon_lock_open_over}"/>
+				<components:IconButton id="lockCloseBtn"
+									   toolTip="解锁"
+									   image="{icon_lock_close}"
+									   overImage="{icon_lock_close_over}"
+									   visible="false"
+									   includeInLayout="false"/>
+			</s:Group>
+
+			<!-- 高度设置 -->
+			<s:Rect width="10"
+					height="60"
+					right="0"
+					verticalCenter="0">
+				<s:fill>
+					<s:SolidColor color="0xFFFFFF"/>
+				</s:fill>
+			</s:Rect>
+			
+			<s:BitmapImage source="{property_selector_arrows}"
+						   right="2"
+						   verticalCenter="0"
+						   rotation="90"/>
+			<s:Label id="labelHeight"
+					 toolTip="高度"
+					 text="{String(hostComponent.valueHeight).substr(0, 4)}"
+					 right="-1"
+					 verticalCenter="0"
+					 rotation="90"
+					 styleName="labelStyle"
+					 visible.editHeight="false"/>
+			<s:TextInput id="inputHeight"
+						 toolTip="高度"
+						 visible="false"
+						 right="-6"
+						 width="60"
+						 skinClass="skins.ShapeMapperInputSkin"
+						 verticalCenter="0"
+						 restrict="0-9"
+						 textAlign="center"
+						 text="{hostComponent.valueHeight}"
+						 rotation="90"
+						 styleName="inputStyle"
+						 visible.editHeight="true"/>
+
+			<!-- 高度设置 -->
+			<s:Rect width="60"
+					height="10"
+					bottom="0"
+					horizontalCenter="0">
+				<s:fill>
+					<s:SolidColor color="0xFFFFFF"/>
+				</s:fill>
+			</s:Rect>
+			<s:BitmapImage source="{property_selector_arrows}"
+						   bottom="2"
+						   horizontalCenter="0"/>
+			<s:Label id="labelWidth"
+					 toolTip="宽度"
+					 text="{String(hostComponent.valueWidth).substr(0, 4)}"
+					 styleName="labelStyle"
+					 bottom="-6"
+					 horizontalCenter="0"
+					 visible.editWidth="false"/>
+			<s:TextInput id="inputWidth"
+						 toolTip="宽度"
+						 visible="false"
+						 bottom="-6"
+						 width="60"
+						 skinClass="skins.ShapeMapperInputSkin"
+						 horizontalCenter="0"
+						 restrict="0-9"
+						 textAlign="center"
+						 text="{hostComponent.valueWidth}"
+						 styleName="inputStyle"
+						 visible.editWidth="true"/>
+		</s:Group>
+		
+		<!-- 坐标设置 -->
+		<s:Group height="22" y="-7" includeInLayout="false">
+			<s:Label id="labelXY"
+					 toolTip="坐标"
+					 text="{hostComponent.valueX}, {hostComponent.valueY}"
+					 styleName="labelStyle"
+					 visible.editXY="false"
+					 includeInLayout="true"
+					 includeInLayout.editXY="false"
+					 verticalCenter="3"/>
+			<s:TextInput id="inputXY"
+						 toolTip="坐标"
+						 text="{hostComponent.valueX}, {hostComponent.valueY}"
+						 skinClass="skins.ShapeMapperInputSkin"
+						 restrict="0-9,"
+						 width="80"
+						 height="20"
+						 styleName="inputStyle"
+						 visible="false"
+						 visible.editXY="true"
+						 includeInLayout="false"/>
+		</s:Group>
+	</s:Group>
+</s:Skin>

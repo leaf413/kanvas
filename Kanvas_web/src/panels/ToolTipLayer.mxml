@@ -1,0 +1,331 @@
+<?xml version="1.0" encoding="utf-8"?>
+<mx:UIComponent xmlns:fx="http://ns.adobe.com/mxml/2009" 
+		 xmlns:s="library://ns.adobe.com/flex/spark" 
+		 xmlns:mx="library://ns.adobe.com/flex/mx" addedToStage="init()">
+	<fx:Script>
+		<![CDATA[
+			import mx.events.ResizeEvent;
+			
+			import panels.tipLayerMode.ConnectorMode;
+			import panels.tipLayerMode.MoveScreenMode;
+			import panels.tipLayerMode.ScaledMode;
+			import panels.tipLayerMode.SelectedMode;
+			import panels.tipLayerMode.TextMode;
+			import panels.tipLayerMode.TipLayerModeBase;
+			import panels.tipLayerMode.ZoomInMode;
+			import panels.tipLayerMode.ZoomOutMode;
+			
+			import util.KanvasBGLoading;
+			import util.Prompt;
+			import util.layout.DispLayout;
+			import util.type.ScaleControlTypeNames;
+			
+			private var loadingAlert:KanvasBGLoading = new KanvasBGLoading();
+			
+			/**
+			 * 当前提示图层状态模式
+			 */
+			public var currentMode:TipLayerModeBase;
+			
+			public var textMode:TipLayerModeBase;
+			public var selectedMode:TipLayerModeBase;
+			public var scaledMode:TipLayerModeBase;
+			public var connectorMode:TipLayerModeBase;
+			public var moveScreenMode:TipLayerModeBase;
+			public var zoomInMode:TipLayerModeBase;
+			public var zoomOutMode:TipLayerModeBase;
+			
+			
+			public var selectorIcon:Sprite = new SelectorIcon();
+			public var scaledIcon:Sprite = new SelectorIcon();
+			public var textIcon:Sprite = new TextIcon();
+			public var connectorIcon:Sprite = new ConnectorIcon();
+			public var moveScreenIcon:Sprite = new MoveScreenIcon();
+			public var zoomInIcon:Sprite = new ZoomInIcon();
+			public var zoomOutIcon:Sprite = new ZoomOutIcon();
+			
+			/**
+			 * 竖箭头
+			 */
+			private var verticalTipIcon:Sprite = new Vertical();
+			
+			/**
+			 * 旋转箭头 
+			 */
+			private var rotationIcon:Sprite = new RotationIcon();
+			
+			/**
+			 * 鼠标经过形状
+			 */
+			private var shapeOverIcon:Sprite = new ShapeOver();
+			
+			/**
+			 *橫箭頭 
+			 */		
+			private var horizontalTipIcon:Sprite = new Horizontal();
+			
+			/**
+			 *左上箭頭 
+			 */		
+			private var topLeftToBottomRightTipIcon:Sprite = new TopLeftToBottomRight();
+			
+			/**
+			 *左下箭頭 
+			 */		
+			private var bottomLeftToTopRightTipIcon:Sprite = new BottomLeftToTopRight();
+			
+			/**
+			 *缩放比例提示框 
+			 */
+			public var prompt:Prompt = new Prompt();
+			
+			/**
+			 * 当前提示图标 
+			 */
+			public var currentTipIcon:DisplayObject;
+			
+			private function init():void
+			{
+				this.addChild(loadingAlert);
+				DispLayout.excuteLayout(this.loadingAlert, this);
+				
+				this.addChild(prompt);
+				
+				this.addEventListener(ResizeEvent.RESIZE, resizeHandler, false, 0, true);
+				this.stage.addEventListener(MouseEvent.MOUSE_MOVE, moveHandler, false, 0, true);
+				
+				initModes();
+			}
+			
+			/**
+			 *显示loading符号 
+			 * 
+			 */
+			public function showLoading():void
+			{
+				loadingAlert.show();
+			}
+			
+			/**
+			 * 切换文字鼠标指针
+			 * 
+			 */
+			public function switchToTextIcon():void
+			{
+				currentTipIcon.visible = true;
+				changeTipIcon(this.textIcon);
+			}
+			
+			/**
+			 * 返回縮放箭頭
+			 */
+			public function returnToScaleTipIcon():void
+			{
+				currentMode.returnToScaleTipIcon();
+			}
+			
+			/**
+			 */
+			public function showMouseIcon():void
+			{
+				
+//				Mouse.hide();
+				if (currentTipIcon)
+					currentTipIcon.visible = true;
+			}
+			
+			public function hideMouseIcon():void
+			{
+//				Mouse.show();
+				if (currentTipIcon)
+					currentTipIcon.visible = false;
+			}
+			
+			/**
+			 * 缩放鼠标箭头控制
+			 */
+			public function showScaleControlIcon(scaleType:String):void
+			{
+				if (scaleType == ScaleControlTypeNames.HORIZONTAL)
+					this.changeTipIcon(this.horizontalTipIcon);
+				else if (scaleType == ScaleControlTypeNames.VERTICAL)
+					this.changeTipIcon(this.verticalTipIcon);
+				else if (scaleType == ScaleControlTypeNames.TOP_LEFT)
+					this.changeTipIcon(this.topLeftToBottomRightTipIcon);
+				else if (scaleType == ScaleControlTypeNames.TOP_RIGHT)
+					this.changeTipIcon(this.bottomLeftToTopRightTipIcon);
+				else if (scaleType == ScaleControlTypeNames.BOTTOM_LEFT)
+					this.changeTipIcon(this.bottomLeftToTopRightTipIcon);
+				else if (scaleType == ScaleControlTypeNames.BOTTOM_RIGHT)
+					this.changeTipIcon(this.topLeftToBottomRightTipIcon);
+				else if (scaleType == ScaleControlTypeNames.ROTATRION)
+					this.changeTipIcon(this.rotationIcon);
+				else if (scaleType == ScaleControlTypeNames.SHAPEOVER)
+					this.changeTipIcon(this.shapeOverIcon);
+				else if (scaleType == ScaleControlTypeNames.NULL)
+					hideMouseIcon();
+				else if (scaleType == ScaleControlTypeNames.SELECT)
+					this.changeTipIcon(this.selectorIcon);
+			}
+			
+			/**
+			 * 切换选择鼠标指针
+			 */
+			public function switchToSelectorIcon():void
+			{
+				currentTipIcon.visible = true;
+				changeTipIcon(this.selectorIcon);
+			}
+			
+			/**
+			 *隐藏loading符号 
+			 * 
+			 */
+			public function hideLoading():void
+			{
+				loadingAlert.hide();
+			}
+			
+			/**
+			 * 初始化提示图层状态模式
+			 */
+			private function initModes():void
+			{
+				textMode = new TextMode(this);
+				selectedMode = new SelectedMode(this);
+				scaledMode = new ScaledMode(this);
+				connectorMode = new ConnectorMode(this);
+				moveScreenMode = new MoveScreenMode(this);
+				zoomInMode = new ZoomInMode(this);
+				zoomOutMode = new ZoomOutMode(this);
+				
+				currentMode = selectedMode;
+				changeTipIcon(selectorIcon);
+			}
+			
+			/**
+			 * 模式切换
+			 */
+			public function toTextMode():void
+			{
+				currentMode.toTextMode();
+			}
+			
+			/**
+			 * 
+			 * 縮放箭頭，進入縮放模式
+			 */
+			public function toScaledMode():void
+			{
+				currentMode.toScaledMode();
+			}
+			
+			public function toSelectedMode():void
+			{
+				currentMode.toSelectedMode();
+			}
+			
+			public function toConnectorMode():void
+			{
+				currentMode.toConnectorMode();
+			}
+			
+			public function toMoveScreenMode():void
+			{
+				currentMode.toModeScreenMode();	
+			}
+			
+			public function toZoomInMode():void
+			{
+				currentMode.toZoomInMode();
+			}
+			
+			public function toZoomOutMode():void
+			{
+				currentMode.toZoomOutMode();	
+			}
+			
+			/**
+			 * 处理mouseMove事件
+			 */
+			private function moveHandler(evt:MouseEvent):void
+			{
+				layoutTipIcon();
+				evt.updateAfterEvent();
+			}
+			
+			/**
+			 * 改变当前鼠标指针
+			 */
+			public function changeTipIcon(icon:DisplayObject):void
+			{
+				if (currentTipIcon)
+				{
+					currentTipIcon.visible = true;
+				}
+				
+				Mouse.hide();
+				
+				if (icon == this.currentTipIcon)
+					return;
+				removeCurrentIcon();
+				setCurrentTipIcon(icon);
+			}
+			
+			/**
+			 *布局当前提示图标 
+			 * 
+			 */
+			private function layoutTipIcon():void
+			{
+				if (currentTipIcon)
+				{
+					currentTipIcon.x = this.mouseX;
+					currentTipIcon.y = this.mouseY;
+				}
+				
+			}
+			
+			/**
+			 * 触发组件尺寸更变，等待加载提示图标更新坐标
+			 */
+			private function resizeHandler(evt:ResizeEvent):void
+			{
+				DispLayout.excuteLayout(this.loadingAlert, this);
+				//这里应该加 尺寸大小提示更变
+			}
+			
+			/**
+			 * 设置当前鼠标指针
+			 */
+			private function setCurrentTipIcon(icon:DisplayObject):void
+			{
+				currentTipIcon = icon;
+				currentTipIcon.visible = true;
+				layoutTipIcon();
+				this.addChild(currentTipIcon);
+			}
+			
+			/**
+			 * 
+			 * 删除鼠标指针
+			 */
+			private function removeCurrentIcon():void
+			{
+				while (this.numChildren)
+				{
+					var children:DisplayObject = this.getChildAt(this.numChildren - 1);
+					if  (children is Prompt || children is KanvasBGLoading)
+					{
+						break;
+					}
+					else
+					{
+						this.removeChild(this.getChildAt(this.numChildren - 1));
+					}
+				}
+			}
+			
+			]]>
+	</fx:Script>
+</mx:UIComponent>

@@ -1,0 +1,874 @@
+<?xml version="1.0" encoding="utf-8"?>
+<s:Group xmlns:fx="http://ns.adobe.com/mxml/2009" 
+		 xmlns:s="library://ns.adobe.com/flex/spark" 
+		 xmlns:mx="library://ns.adobe.com/flex/mx" xmlns:components="components.*">
+	<fx:Script>
+		<![CDATA[
+			import events.ScaleControlEvent;
+			
+			import knowledgeMapEditor.controlIcons.icon_rotation_scaleControl;
+			import knowledgeMapEditor.controlIcons.icon_scaleControl;
+			
+			import model.vo.ElementVO;
+			
+			import mx.binding.utils.BindingUtils;
+			import mx.events.DragEvent;
+			
+			import util.BrokenLineDrawer;
+			import util.type.ScaleControlTypeNames;
+			
+			import view.Canvas;
+			
+			[Bindable]
+			public var canvas:Canvas;
+			
+			[Bindable]
+			public var shapeVO:ElementVO;
+			
+			private var _topLeftX:int = 0;
+			
+			
+			[Bindable]
+			public function get topLeftX():int 
+			{
+				return _topLeftX;
+			}
+			
+			public function set topLeftX(value:int):void 
+			{
+				_topLeftX = value;
+				chekSize();
+			}
+			
+			private var _topLeftY:int = 0;
+			
+			[Bindable]
+			public function get topLeftY():int 
+			{
+				return _topLeftY;
+			}
+			
+			public function set topLeftY(value:int):void 
+			{
+				_topLeftY = value;
+				chekSize();
+			}
+			
+			private var _topRightX:int = 0;
+			
+			[Bindable]
+			public function get topRightX():int 
+			{
+				return _topRightX;
+			}
+			
+			public function set topRightX(value:int):void 
+			{
+				_topRightX = value;
+				chekSize();
+			}
+			
+			private var _topRightY:int = 0;
+			
+			[Bindable]
+			public function get topRightY():int 
+			{
+				return _topRightY;
+			}
+			
+			public function set topRightY(value:int):void 
+			{
+				_topRightY = value;
+				chekSize();
+			}
+			
+			private var _bottomLeftX:int = 0;
+			
+			[Bindable]
+			public function get bottomLeftX():int 
+			{
+				return _bottomLeftX;
+			}
+			
+			public function set bottomLeftX(value:int):void 
+			{
+				_bottomLeftX = value;
+				chekSize();
+			}
+			
+			private var _bottomLeftY:int = 0;
+			
+			[Bindable]
+			public function get bottomLeftY():int 
+			{
+				return _bottomLeftY;
+			}
+			
+			public function set bottomLeftY(value:int):void 
+			{
+				_bottomLeftY = value;
+				chekSize();
+			}
+			
+			private var _bottomRightX:int = 0;
+			
+			[Bindable]
+			public function get bottomRightX():int 
+			{
+				return _bottomRightX;
+			}
+			
+			public function set bottomRightX(value:int):void 
+			{
+				_bottomRightX = value;
+				chekSize();
+				getrotationXY();
+			}
+			
+			private var _bottomRightY:int = 0;
+			
+			[Bindable]
+			public function get bottomRightY():int 
+			{
+				return _bottomRightY;
+			}
+			
+			public function set bottomRightY(value:int):void 
+			{
+				_bottomRightY = value;
+				chekSize();
+				getrotationXY();
+			}
+			
+			////////////////////////////////////////////////////
+			private var _topX:int = 0;
+			
+			[Bindable]
+			public function get topX():int 
+			{
+				return _topX;
+			}
+			
+			public function set topX(value:int):void 
+			{
+				_topX = value;
+			}
+			
+			private var _topY:int = 0;
+			
+			[Bindable]
+			public function get topY():int 
+			{
+				return _topY;
+			}
+			
+			public function set topY(value:int):void 
+			{
+				_topY = value;
+			}
+			
+			private var _leftX:int = 0;
+			
+			[Bindable]
+			public function get leftX():int 
+			{
+				return _leftX;
+			}
+			
+			public function set leftX(value:int):void 
+			{
+				_leftX = value;
+			}
+			
+			private var _leftY:int = 0;
+			
+			[Bindable]
+			public function get leftY():int 
+			{
+				return _leftY;
+			}
+			
+			public function set leftY(value:int):void 
+			{
+				_leftY = value;
+			}
+			
+			private var _bottomX:int = 0;
+			
+			[Bindable]
+			public function get bottomX():int 
+			{
+				return _bottomX;
+			}
+			
+			public function set bottomX(value:int):void 
+			{
+				_bottomX = value;
+			}
+			
+			private var _bottomY:int = 0;
+			
+			[Bindable]
+			public function get bottomY():int 
+			{
+				return _bottomY;
+			}
+			
+			public function set bottomY(value:int):void 
+			{
+				_bottomY = value;
+			}
+			
+			private var _rightX:int = 0;
+			
+			[Bindable]
+			public function get rightX():int 
+			{
+				return _rightX;
+			}
+			
+			public function set rightX(value:int):void 
+			{
+				_rightX = value;
+			}
+			
+			private var _rightY:int = 0;
+			
+			[Bindable]
+			public function get rightY():int 
+			{
+				return _rightY;
+			}
+			
+			public function set rightY(value:int):void 
+			{
+				_rightY = value;
+			}
+			
+			//////////////////////////////////////////////
+			
+			private var _startX:int = 0;
+			
+			[Bindable]
+			public function get startX():int 
+			{
+				return _startX;
+			}
+			
+			public function set startX(value:int):void 
+			{
+				_startX = value;
+			}
+			
+			private var _startY:int = 0;
+			
+			[Bindable]
+			public function get startY():int 
+			{
+				return _startY;
+			}
+			
+			public function set startY(value:int):void 
+			{
+				_startY = value;
+			}
+			
+			private var _endX:int = 0;
+			
+			public function set endX(value:int):void 
+			{
+				_endX = value;
+			}
+			
+			[Bindable]
+			public function get endX():int 
+			{
+				return _endX;
+			}
+			
+			private var _endY:int = 0;
+			
+			public function set endY(value:int):void 
+			{
+				_endY = value;
+			}
+			
+			[Bindable]
+			public function get endY():int 
+			{
+				return _endY;
+			}
+			
+			[Bindable]
+			public var centerX:int = 0;
+			
+			[Bindable]
+			public var centerY:int = 0;
+			
+			private var _rotationXX:int = 0;
+			
+			public function set rotationXX(value:int):void 
+			{
+				_rotationXX = value;
+			}
+			
+			[Bindable]
+			public function get rotationXX():int 
+			{
+				return _rotationXX;
+			}
+			
+			private var _rotationYY:int = 0;
+			
+			public function set rotationYY(value:int):void 
+			{
+				_rotationYY = value;
+			}
+			
+			[Bindable]
+			public function get rotationYY():int 
+			{
+				
+				return _rotationYY;
+			}
+			
+			public function getrotationXY():void
+			{
+				rotationXX = bottomRightX + 15;
+				rotationYY = bottomRightY + 15;
+			}
+			
+			
+			//////////////////////////////////////////////
+			
+			protected function topLeft_mouseDownHandler(event:MouseEvent):void
+			{
+				topLeft.startDrag();
+				stage.addEventListener(MouseEvent.MOUSE_MOVE,topLeft_mouseMoveHandler);
+				stage.addEventListener(MouseEvent.MOUSE_UP,topLeft_mouseUpHandler);
+			}
+			
+			protected function topLeft_mouseMoveHandler(event:MouseEvent):void
+			{
+				drawRect();
+				topLeftX = this.mouseX;
+				topLeftY = this.mouseY;
+//				var e:ScaleControlEvent = new ScaleControlEvent(ScaleControlEvent.SHOW_SIZE_PROMPT);
+//				e._w = this.widthValue;
+//				e._h = this.heightValue;
+//				this.dispatchEvent(e);
+			}
+			
+			protected function topLeft_mouseUpHandler(event:MouseEvent):void
+			{
+				this.graphics.clear();
+				stage.removeEventListener(MouseEvent.MOUSE_MOVE,topLeft_mouseMoveHandler);
+				stage.removeEventListener(MouseEvent.MOUSE_UP,topLeft_mouseUpHandler);
+				topLeft.stopDrag();
+				this.dispatchEvent(new ScaleControlEvent(ScaleControlEvent.SCALE_COMPLETE));
+//				this.dispatchEvent(new ScaleControlEvent(ScaleControlEvent.HIDE_PROMPT));
+			}
+			
+			protected function topRight_mouseDownHandler(event:MouseEvent):void
+			{
+				topRight.startDrag();
+				stage.addEventListener(MouseEvent.MOUSE_MOVE,topRight_mouseMoveHandler);
+				stage.addEventListener(MouseEvent.MOUSE_UP,topRight_mouseUpHandler);
+			}
+			
+			protected function topRight_mouseMoveHandler(event:MouseEvent):void
+			{
+				drawRect();
+				topLeftY = this.mouseY;
+				topRightX = this.mouseX;
+//				var e:ScaleControlEvent = new ScaleControlEvent(ScaleControlEvent.SHOW_SIZE_PROMPT);
+//				e._w = this.widthValue;
+//				e._h = this.heightValue;
+//				this.dispatchEvent(e);
+			}
+			
+			protected function topRight_mouseUpHandler(event:MouseEvent):void
+			{
+				this.graphics.clear();
+				stage.removeEventListener(MouseEvent.MOUSE_MOVE,topRight_mouseMoveHandler);
+				stage.removeEventListener(MouseEvent.MOUSE_UP,topRight_mouseUpHandler);
+				topRight.stopDrag();
+				this.dispatchEvent(new ScaleControlEvent(ScaleControlEvent.SCALE_COMPLETE));
+//				this.dispatchEvent(new ScaleControlEvent(ScaleControlEvent.HIDE_PROMPT));
+			}
+			
+			protected function bottomLeft_mouseDownHandler(event:MouseEvent):void
+			{
+				bottomLeft.startDrag();
+				stage.addEventListener(MouseEvent.MOUSE_MOVE,bottomLeft_mouseMoveHandler);
+				stage.addEventListener(MouseEvent.MOUSE_UP,bottomLeft_mouseUpHandler);
+			}
+			
+			protected function bottomLeft_mouseMoveHandler(event:MouseEvent):void
+			{
+				drawRect();
+				topLeftX = this.mouseX;
+				bottomRightY = this.mouseY;
+//				var e:ScaleControlEvent = new ScaleControlEvent(ScaleControlEvent.SHOW_SIZE_PROMPT);
+//				e._w = this.widthValue;
+//				e._h = this.heightValue;
+//				this.dispatchEvent(e);
+			}
+			
+			protected function bottomLeft_mouseUpHandler(event:MouseEvent):void
+			{
+				this.graphics.clear();
+				stage.removeEventListener(MouseEvent.MOUSE_MOVE,bottomLeft_mouseMoveHandler);
+				stage.removeEventListener(MouseEvent.MOUSE_UP,bottomLeft_mouseUpHandler);
+				bottomLeft.stopDrag();
+				this.dispatchEvent(new ScaleControlEvent(ScaleControlEvent.SCALE_COMPLETE));
+//				this.dispatchEvent(new ScaleControlEvent(ScaleControlEvent.HIDE_PROMPT));
+			}
+			
+			protected function bottomRight_mouseDownHandler(event:MouseEvent):void
+			{
+				bottomRight.startDrag();
+				stage.addEventListener(MouseEvent.MOUSE_MOVE,bottomRight_mouseMoveHandler);
+				stage.addEventListener(MouseEvent.MOUSE_UP,bottomRight_mouseUpHandler);
+			}
+			
+			protected function bottomRight_mouseMoveHandler(event:MouseEvent):void
+			{
+				drawRect();
+				topRightX = this.mouseX;
+				bottomRightY = this.mouseY;
+//				var e:ScaleControlEvent = new ScaleControlEvent(ScaleControlEvent.SHOW_SIZE_PROMPT);
+//				e._w = this.widthValue;
+//				e._h = this.heightValue;
+//				this.dispatchEvent(e);
+			}
+			
+			protected function bottomRight_mouseUpHandler(event:MouseEvent):void
+			{
+				this.graphics.clear();
+				stage.removeEventListener(MouseEvent.MOUSE_MOVE,bottomRight_mouseMoveHandler);
+				stage.removeEventListener(MouseEvent.MOUSE_UP,bottomRight_mouseUpHandler);
+				bottomRight.stopDrag();
+				this.dispatchEvent(new ScaleControlEvent(ScaleControlEvent.SCALE_COMPLETE));
+//				this.dispatchEvent(new ScaleControlEvent(ScaleControlEvent.HIDE_PROMPT));
+			}
+			
+			protected function leftC_mouseDownHandler(event:MouseEvent):void
+			{
+				var rect:Rectangle=new Rectangle(- shapeVO.position.x,leftC.y - 4.5,stage.stageWidth,0);
+				leftC.startDrag(false,rect);
+				stage.addEventListener(MouseEvent.MOUSE_MOVE,leftC_mouseMoveHandler);
+				stage.addEventListener(MouseEvent.MOUSE_UP,leftC_mouseUpHandler);
+			}
+			
+			
+			protected function leftC_mouseMoveHandler(event:MouseEvent):void
+			{
+				drawRect();
+				topLeftX = this.mouseX;
+//				var e:ScaleControlEvent = new ScaleControlEvent(ScaleControlEvent.SHOW_SIZE_PROMPT);
+//				e._w = this.widthValue;
+//				e._h = this.heightValue;
+//				this.dispatchEvent(e);
+			}
+			
+			protected function leftC_mouseUpHandler(event:MouseEvent):void
+			{
+				this.graphics.clear();
+				stage.removeEventListener(MouseEvent.MOUSE_MOVE,leftC_mouseMoveHandler);
+				stage.removeEventListener(MouseEvent.MOUSE_UP,leftC_mouseUpHandler);
+				leftC.stopDrag();
+				this.dispatchEvent(new ScaleControlEvent(ScaleControlEvent.SCALE_COMPLETE));
+//				this.dispatchEvent(new ScaleControlEvent(ScaleControlEvent.HIDE_PROMPT));
+			}
+			
+			protected function rightC_mouseDownHandler(event:MouseEvent):void
+			{
+				var rect:Rectangle=new Rectangle(0,rightC.y - 4.5,stage.stageWidth,0);
+				rightC.startDrag(false,rect);
+				stage.addEventListener(MouseEvent.MOUSE_MOVE,rightC_mouseMoveHandler);
+				stage.addEventListener(MouseEvent.MOUSE_UP,rightC_mouseUpHandler);
+			}
+			
+			protected function rightC_mouseMoveHandler(event:MouseEvent):void
+			{
+				drawRect();
+				topRightX = this.mouseX;
+//				var e:ScaleControlEvent = new ScaleControlEvent(ScaleControlEvent.SHOW_SIZE_PROMPT);
+//				e._w = this.widthValue;
+//				e._h = this.heightValue;
+//				this.dispatchEvent(e);
+			}
+			
+			protected function rightC_mouseUpHandler(event:MouseEvent):void
+			{
+				this.graphics.clear();
+				stage.removeEventListener(MouseEvent.MOUSE_MOVE,rightC_mouseMoveHandler);
+				stage.removeEventListener(MouseEvent.MOUSE_UP,rightC_mouseUpHandler);
+				rightC.stopDrag();
+				this.dispatchEvent(new ScaleControlEvent(ScaleControlEvent.SCALE_COMPLETE));
+//				this.dispatchEvent(new ScaleControlEvent(ScaleControlEvent.HIDE_PROMPT));
+			}
+			
+			protected function bottomC_mouseDownHandler(event:MouseEvent):void
+			{
+				var rect:Rectangle=new Rectangle(bottomC.x - 4.5,0,0,stage.stageHeight);
+				bottomC.startDrag(false,rect);
+				stage.addEventListener(MouseEvent.MOUSE_UP,bottomC_mouseUpHandler);
+				stage.addEventListener(MouseEvent.MOUSE_MOVE,bottomC_mouseMoveHandler);
+			}
+			
+			protected function bottomC_mouseMoveHandler(event:MouseEvent):void
+			{
+				drawRect();
+				bottomRightY = this.mouseY;
+//				var e:ScaleControlEvent = new ScaleControlEvent(ScaleControlEvent.SHOW_SIZE_PROMPT);
+//				e._w = this.widthValue;
+//				e._h = this.heightValue;
+//				this.dispatchEvent(e);
+			}
+			
+			protected function bottomC_mouseUpHandler(event:MouseEvent):void
+			{
+				this.graphics.clear();
+				stage.removeEventListener(MouseEvent.MOUSE_MOVE, bottomC_mouseMoveHandler);
+				stage.removeEventListener(MouseEvent.MOUSE_UP, bottomC_mouseUpHandler);
+				bottomC.stopDrag();
+				this.dispatchEvent(new ScaleControlEvent(ScaleControlEvent.SCALE_COMPLETE));
+//				this.dispatchEvent(new ScaleControlEvent(ScaleControlEvent.HIDE_PROMPT));
+			}
+			
+			protected function topC_mouseDownHandler(event:MouseEvent):void
+			{
+				var rect:Rectangle=new Rectangle(topC.x - 4.5, - shapeVO.position.y, 0, stage.stageHeight);
+				topC.startDrag(false, rect);
+				stage.addEventListener(MouseEvent.MOUSE_MOVE, topC_mouseMoveHandler);
+				stage.addEventListener(MouseEvent.MOUSE_UP, topC_mouseUpHandler);
+			}
+			
+			protected function topC_mouseMoveHandler(event:MouseEvent):void
+			{
+				drawRect();
+				topLeftY = this.mouseY;
+//				var e:ScaleControlEvent = new ScaleControlEvent(ScaleControlEvent.SHOW_SIZE_PROMPT);
+//				e._w = this.widthValue;
+//				e._h = this.heightValue;
+//				this.dispatchEvent(e);
+			}
+			
+			protected function topC_mouseUpHandler(event:MouseEvent):void
+			{
+				this.graphics.clear();
+				stage.removeEventListener(MouseEvent.MOUSE_UP,topC_mouseUpHandler);
+				stage.removeEventListener(MouseEvent.MOUSE_MOVE,topC_mouseMoveHandler);
+				topC.stopDrag();
+				this.dispatchEvent(new ScaleControlEvent(ScaleControlEvent.SCALE_COMPLETE));
+//				this.dispatchEvent(new ScaleControlEvent(ScaleControlEvent.HIDE_PROMPT));
+			}
+			
+			protected function startC_mouseDownHandler(event:MouseEvent):void
+			{
+				startC.startDrag();
+				stage.addEventListener(MouseEvent.MOUSE_MOVE,startC_mouseMoveHandler);
+				stage.addEventListener(MouseEvent.MOUSE_UP,startC_mouseUpHandler);
+			}
+			
+			protected function startC_mouseMoveHandler(event:MouseEvent):void
+			{
+				drawLine();
+				startX = startC.x;
+				startY = startC.y;
+			}
+			
+			protected function startC_mouseUpHandler(event:MouseEvent):void
+			{
+				this.graphics.clear();
+				stage.removeEventListener(MouseEvent.MOUSE_MOVE,startC_mouseMoveHandler);
+				stage.removeEventListener(MouseEvent.MOUSE_UP,startC_mouseUpHandler);
+				startC.stopDrag();
+				this.dispatchEvent(new ScaleControlEvent(ScaleControlEvent.SCLAE_LINE_COMPLETE));
+			}
+			
+			protected function endC_mouseDownHandler(event:MouseEvent):void
+			{
+				endC.startDrag();
+				stage.addEventListener(MouseEvent.MOUSE_MOVE,endC_mouseMoveHandler);
+				stage.addEventListener(MouseEvent.MOUSE_UP,endC_mouseUpHandler);
+			}
+			
+			protected function endC_mouseMoveHandler(event:MouseEvent):void
+			{
+				drawLine();
+				endX = endC.x;
+				endY = endC.y;
+			}
+			
+			protected function endC_mouseUpHandler(event:MouseEvent):void
+			{
+				this.graphics.clear();
+				stage.removeEventListener(MouseEvent.MOUSE_UP,endC_mouseUpHandler);
+				stage.removeEventListener(MouseEvent.MOUSE_MOVE,endC_mouseMoveHandler);
+				endC.stopDrag();
+				this.dispatchEvent(new ScaleControlEvent(ScaleControlEvent.SCLAE_LINE_COMPLETE));
+//				this.dispatchEvent(new ScaleControlEvent(ScaleControlEvent.HIDE_PROMPT));
+			}
+			
+			protected function rotationControl_mouseDownHandler(event:MouseEvent):void
+			{
+				stage.addEventListener(MouseEvent.MOUSE_MOVE,rotationControl_mouseMoveHandler);
+				stage.addEventListener(MouseEvent.MOUSE_UP,rotationControl_mouseUpHandler);
+//				oldRotation = shapeVO.rotation;
+			}
+			
+			private var newRotation:int;
+			private var oldRotation:int;
+			
+			protected function rotationControl_mouseMoveHandler(event:MouseEvent):void
+			{
+//				var p:Point = canvas.globalToLocal(new Point(stage.mouseX,stage.mouseY)) as Point;
+//				var f:Number = (p.y - shapeVO.y) / (p.x - shapeVO.x);
+//				var angle:Number = Math.atan(f) * 180 / Math.PI;
+//				var f1:Number = (rotationYY - topLeftY ) / (rotationXX - topLeftX);
+//				var angle2:Number = Math.atan(f1) * 180 / Math.PI;
+//				
+//				if (p.x < shapeVO.x )
+//				{
+//					angle -= 180;
+//				}
+//				shapeVO.rotation = angle - angle2;
+//				
+//				var e:ScaleControlEvent = new ScaleControlEvent(ScaleControlEvent.SHOW_ROTATION_PROMPT);
+//				e._r = this.rotation;
+//				this.dispatchEvent(e);
+//				
+				
+			}
+			
+			protected function rotationControl_mouseUpHandler(event:MouseEvent):void
+			{
+//				newRotation = shapeVO.rotation;
+//				var e:EditorEvent = new EditorEvent(EditorEvent.ROTATION_COMPLETE);
+//				e.oldRotation = oldRotation;
+//				e.newRotation = newRotation;
+//				this.dispatchEvent(e);
+//				
+//				stage.removeEventListener(MouseEvent.MOUSE_UP,rotationControl_mouseUpHandler);
+//				stage.removeEventListener(MouseEvent.MOUSE_MOVE,rotationControl_mouseMoveHandler);
+//				this.dispatchEvent(new ScaleControlEvent(ScaleControlEvent.RETURN_TO_SCALE_ICON));
+//				this.dispatchEvent(new ScaleControlEvent(ScaleControlEvent.HIDE_PROMPT));
+				
+			}
+			
+			private var _widthValue:int = 0;
+			
+			public function set widthValue(value:int):void 
+			{
+				_widthValue = value;
+			}
+			
+			[Bindable]
+			public function get widthValue():int 
+			{
+				return _widthValue;
+			}
+			
+			private var _heightValue:int = 0;
+			
+			public function set heightValue(value:int):void 
+			{
+				_heightValue = value;
+			}
+			
+			[Bindable]
+			public function get heightValue():int 
+			{
+				return _heightValue;
+			}
+			
+			private function chekSize():void
+			{
+				bottomLeftX = leftX = topLeftX;
+				bottomRightX = rightX = topRightX;
+				bottomX = topX = (topRightX - topLeftX) / 2 + topLeftX;
+				topRightY = topY = topLeftY;
+				bottomLeftY = bottomY = bottomRightY;
+				leftY = rightY = (bottomLeftY - topLeftY) / 2 + topLeftY;
+				
+				widthValue = new Point((topRightX - topLeftX) / canvas.scaleX, (topRightY - topLeftY) / canvas.scaleX).length;
+				heightValue = new Point((bottomLeftX - topLeftX) / canvas.scaleX, (bottomLeftY - topLeftY) / canvas.scaleX).length;
+			}
+			
+			private function drawLine():void
+			{
+				this.graphics.clear();
+				BrokenLineDrawer.drawLine(this.graphics, new Point(startX,startY), new Point(endX,endY), 1, 0, 5);
+			}
+			
+			private function drawRect():void
+			{
+				this.graphics.clear();
+				BrokenLineDrawer.drawLine(this.graphics, new Point(topLeftX,topLeftY), new Point(topX,topY), 1, 0, 5);
+				BrokenLineDrawer.drawLine(this.graphics, new Point(topX,topY), new Point(topRightX,topRightY), 1, 0, 5);
+				BrokenLineDrawer.drawLine(this.graphics, new Point(topRightX,topRightY), new Point(rightX,rightY), 1, 0, 5);
+				BrokenLineDrawer.drawLine(this.graphics, new Point(rightX,rightY), new Point(bottomRightX,bottomRightY), 1, 0, 5);
+				BrokenLineDrawer.drawLine(this.graphics, new Point(bottomRightX,bottomRightY), new Point(bottomX,bottomY), 1, 0, 5);
+				BrokenLineDrawer.drawLine(this.graphics, new Point(bottomX,bottomY), new Point(bottomLeftX,bottomLeftY), 1, 0, 5);
+				BrokenLineDrawer.drawLine(this.graphics, new Point(bottomLeftX,bottomLeftY), new Point(leftX,leftY), 1, 0, 5);
+				BrokenLineDrawer.drawLine(this.graphics, new Point(leftX,leftY), new Point(topLeftX,topLeftY), 1, 0, 5);
+			}
+			
+			public const SHAPE_STATE:String = "shape";
+			public const TEXT_STATE:String = "text";
+			public const LINE_STATE:String = "line";
+			public const CONNECT_STATE:String = "connect";
+			public const GROUP_STATE:String = "group";
+			
+			protected function topLeft_rollOutHandler(event:MouseEvent):void
+			{
+				if (event.buttonDown)
+					return;
+				this.dispatchEvent(new ScaleControlEvent(ScaleControlEvent.RETURN_TO_SCALE_ICON));
+			}
+			
+			protected function topLeft_rollOverHandler(event:MouseEvent):void
+			{
+				this.dispatchEvent(new ScaleControlEvent(ScaleControlEvent.SHOW_SCALE_CONTROL_ICON, ScaleControlTypeNames.TOP_LEFT));
+			}
+			
+			protected function topRight_rollOutHandler(event:MouseEvent):void
+			{
+				if (event.buttonDown)
+					return;
+				this.dispatchEvent(new ScaleControlEvent(ScaleControlEvent.RETURN_TO_SCALE_ICON));
+			}
+			
+			protected function topRight_rollOverHandler(event:MouseEvent):void
+			{
+				this.dispatchEvent(new ScaleControlEvent(ScaleControlEvent.SHOW_SCALE_CONTROL_ICON, ScaleControlTypeNames.TOP_RIGHT));
+			}
+			
+			protected function bottomLeft_rollOutHandler(event:MouseEvent):void
+			{
+				if (event.buttonDown)
+					return;
+				this.dispatchEvent(new ScaleControlEvent(ScaleControlEvent.RETURN_TO_SCALE_ICON));
+			}
+			
+			protected function bottomLeft_rollOverHandler(event:MouseEvent):void
+			{
+				this.dispatchEvent(new ScaleControlEvent(ScaleControlEvent.SHOW_SCALE_CONTROL_ICON, ScaleControlTypeNames.BOTTOM_LEFT));
+			}
+			
+			protected function bottomRight_rollOutHandler(event:MouseEvent):void
+			{
+				if (event.buttonDown)
+					return;
+				this.dispatchEvent(new ScaleControlEvent(ScaleControlEvent.RETURN_TO_SCALE_ICON));
+			}
+			
+			protected function bottomRight_rollOverHandler(event:MouseEvent):void
+			{
+				this.dispatchEvent(new ScaleControlEvent(ScaleControlEvent.SHOW_SCALE_CONTROL_ICON, ScaleControlTypeNames.BOTTOM_RIGHT));
+			}
+			
+			protected function leftC_rollOutHandler(event:MouseEvent):void
+			{
+				if (event.buttonDown)
+					return;
+				this.dispatchEvent(new ScaleControlEvent(ScaleControlEvent.RETURN_TO_SCALE_ICON));
+			}
+			
+			protected function leftC_rollOverHandler(event:MouseEvent):void
+			{
+				this.dispatchEvent(new ScaleControlEvent(ScaleControlEvent.SHOW_SCALE_CONTROL_ICON, ScaleControlTypeNames.HORIZONTAL));
+			}
+			
+			protected function rightC_rollOutHandler(event:MouseEvent):void
+			{
+				if (event.buttonDown)
+					return;
+				this.dispatchEvent(new ScaleControlEvent(ScaleControlEvent.RETURN_TO_SCALE_ICON));
+			}
+			
+			protected function rightC_rollOverHandler(event:MouseEvent):void
+			{
+				this.dispatchEvent(new ScaleControlEvent(ScaleControlEvent.SHOW_SCALE_CONTROL_ICON, ScaleControlTypeNames.HORIZONTAL));
+			}
+			
+			protected function bottomC_rollOutHandler(event:MouseEvent):void
+			{
+				if (event.buttonDown)
+					return;
+				this.dispatchEvent(new ScaleControlEvent(ScaleControlEvent.RETURN_TO_SCALE_ICON));
+			}
+			
+			protected function bottomC_rollOverHandler(event:MouseEvent):void
+			{
+				this.dispatchEvent(new ScaleControlEvent(ScaleControlEvent.SHOW_SCALE_CONTROL_ICON, ScaleControlTypeNames.VERTICAL));
+			}
+			
+			protected function topC_rollOutHandler(event:MouseEvent):void
+			{
+				if (event.buttonDown)
+					return;
+				this.dispatchEvent(new ScaleControlEvent(ScaleControlEvent.RETURN_TO_SCALE_ICON));
+			}
+			
+			protected function topC_rollOverHandler(event:MouseEvent):void
+			{
+				this.dispatchEvent(new ScaleControlEvent(ScaleControlEvent.SHOW_SCALE_CONTROL_ICON, ScaleControlTypeNames.VERTICAL));
+			}
+			
+			protected function rotationControl_rollOutHandler(event:MouseEvent):void
+			{
+				if (event.buttonDown)
+					return;
+				this.dispatchEvent(new ScaleControlEvent(ScaleControlEvent.RETURN_TO_SCALE_ICON));
+			}
+			
+			protected function rotationControl_rollOverHandler(event:MouseEvent):void
+			{
+				this.dispatchEvent(new ScaleControlEvent(ScaleControlEvent.SHOW_SCALE_CONTROL_ICON, ScaleControlTypeNames.ROTATRION));
+			}
+			
+		]]>
+	</fx:Script>
+	
+	<fx:Declarations>
+		<!-- 将非可视元素（例如服务、值对象）放在此处 -->
+	</fx:Declarations>
+	<s:states>
+		<s:State name="shape"/>
+		<s:State name="text"/>
+		<s:State name="line"/>
+		<s:State name="connect"/>
+		<s:State name="group" />
+	</s:states>
+	<s:currentState>shape</s:currentState>
+	
+	<components:ScaleControlImage id="topLeft" x="{topLeftX}" y="{topLeftY}" visible="false" visible.shape="true" visible.text="true" visible.group="true"
+								  mouseDown="topLeft_mouseDownHandler(event)" rollOut="topLeft_rollOutHandler(event)" rollOver="topLeft_rollOverHandler(event)"/>
+	<components:ScaleControlImage id="topRight" x="{topRightX}" y="{topRightY}" visible="false" visible.shape="true" visible.text="true" visible.group="true"
+								  mouseDown="topRight_mouseDownHandler(event)" rollOut="topRight_rollOutHandler(event)" rollOver="topRight_rollOverHandler(event)"/>
+	<components:ScaleControlImage id="bottomLeft" x="{bottomLeftX}" y="{bottomLeftY}" visible="false" visible.shape="true" visible.text="true" visible.group="true"
+								  mouseDown="bottomLeft_mouseDownHandler(event)" rollOut="bottomLeft_rollOutHandler(event)" rollOver="bottomLeft_rollOverHandler(event)"/>
+	<components:ScaleControlImage id="bottomRight" x="{bottomRightX}" y="{bottomRightY}" visible="false" visible.shape="true" visible.text="true" visible.group="true"
+								  mouseDown="bottomRight_mouseDownHandler(event)" rollOut="bottomRight_rollOutHandler(event)" rollOver="bottomRight_rollOverHandler(event)"/>
+	<components:ScaleControlImage id="leftC" x="{leftX}" y="{leftY}" visible="false" visible.shape="true" visible.group="true"
+								  mouseDown="leftC_mouseDownHandler(event)" rollOut="leftC_rollOutHandler(event)" rollOver="leftC_rollOverHandler(event)"/>
+	<components:ScaleControlImage id="rightC" x="{rightX}" y="{rightY}" visible="false" visible.shape="true" visible.group="true"
+								  mouseDown="rightC_mouseDownHandler(event)" rollOut="rightC_rollOutHandler(event)" rollOver="rightC_rollOverHandler(event)"/>
+	<components:ScaleControlImage id="bottomC" x="{bottomX}" y="{bottomY}" visible="false" visible.shape="true" visible.group="true"
+								  mouseDown="bottomC_mouseDownHandler(event)" rollOut="bottomC_rollOutHandler(event)" rollOver="bottomC_rollOverHandler(event)"/>
+	<components:ScaleControlImage id="topC" x="{topX}" y="{topY}" visible="false" visible.shape="true" visible.group="true"
+								  mouseDown="topC_mouseDownHandler(event)" rollOut="topC_rollOutHandler(event)" rollOver="topC_rollOverHandler(event)"/>
+	<components:ScaleControlImage id="startC" x="{startX}" y="{startY}" visible="false" visible.line="true"
+								  mouseDown="startC_mouseDownHandler(event)" />
+	<components:ScaleControlImage id="endC" x="{endX}" y="{endY}" visible="false" visible.line="true"
+								  mouseDown="endC_mouseDownHandler(event)" />
+	<components:ScaleControlImage id="center" x="{centerX}" y="{centerY}" visible="false" visible.connect="true"/>
+	<!--<components:ScaleControlImage id="rotationControl" source="{icon_rotation_scaleControl}"
+								  x="{rotationXX}" y="{rotationYY}" visible="false" visible.shape="true" visible.group="false"
+								  mouseDown="rotationControl_mouseDownHandler(event)" rollOut="rotationControl_rollOutHandler(event)" rollOver="rotationControl_rollOverHandler(event)"/>
+	-->
+</s:Group>

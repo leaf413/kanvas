@@ -1,0 +1,472 @@
+<?xml version="1.0" encoding="utf-8"?>
+<s:SkinnableContainer xmlns:fx="http://ns.adobe.com/mxml/2009" xmlns:s="library://ns.adobe.com/flex/spark"
+					  skinClass="skins.ToolBarSkin" xmlns:mx="library://ns.adobe.com/flex/halo" xmlns:components="components.*"
+					  minWidth="600" creationComplete="init(event)" rollOver="rollOverHandler(event)" rollOut="rollOutHandler(event)">
+	<fx:Script>
+		<![CDATA[
+			import components.IconButton;
+			
+			import events.ToolBarEvent;
+			
+			import knowledgeMapEditor.controlIcons.icon_bg;
+			import knowledgeMapEditor.controlIcons.icon_bg_over;
+			import knowledgeMapEditor.controlIcons.icon_bg_selected;
+			import knowledgeMapEditor.controlIcons.icon_export;
+			import knowledgeMapEditor.controlIcons.icon_export_over;
+			import knowledgeMapEditor.controlIcons.icon_export_selected;
+			import knowledgeMapEditor.controlIcons.icon_hand;
+			import knowledgeMapEditor.controlIcons.icon_hand_over;
+			import knowledgeMapEditor.controlIcons.icon_hand_selected;
+			import knowledgeMapEditor.controlIcons.icon_import;
+			import knowledgeMapEditor.controlIcons.icon_import_over;
+			import knowledgeMapEditor.controlIcons.icon_import_selected;
+			import knowledgeMapEditor.controlIcons.icon_line;
+			import knowledgeMapEditor.controlIcons.icon_line_over;
+			import knowledgeMapEditor.controlIcons.icon_line_selected;
+			import knowledgeMapEditor.controlIcons.icon_shape;
+			import knowledgeMapEditor.controlIcons.icon_shape_over;
+			import knowledgeMapEditor.controlIcons.icon_shape_selected;
+			import knowledgeMapEditor.controlIcons.icon_text;
+			import knowledgeMapEditor.controlIcons.icon_text_over;
+			import knowledgeMapEditor.controlIcons.icon_text_selected;
+			import knowledgeMapEditor.controlIcons.icon_zoom_fit;
+			import knowledgeMapEditor.controlIcons.icon_zoom_fit_over;
+			import knowledgeMapEditor.controlIcons.icon_zoom_fit_selected;
+			import knowledgeMapEditor.controlIcons.icon_zoom_in;
+			import knowledgeMapEditor.controlIcons.icon_zoom_in_over;
+			import knowledgeMapEditor.controlIcons.icon_zoom_in_selected;
+			import knowledgeMapEditor.controlIcons.icon_zoom_orign;
+			import knowledgeMapEditor.controlIcons.icon_zoom_orign_over;
+			import knowledgeMapEditor.controlIcons.icon_zoom_orign_selected;
+			import knowledgeMapEditor.controlIcons.icon_zoom_out;
+			import knowledgeMapEditor.controlIcons.icon_zoom_out_over;
+			import knowledgeMapEditor.controlIcons.icon_zoom_out_selected;
+			
+			import mx.events.FlexEvent;
+			import mx.managers.ToolTipManager;
+			
+			import panels.toolBarModes.ConnectMode;
+			import panels.toolBarModes.CreatShapeMode;
+			import panels.toolBarModes.DrawLineMode;
+			import panels.toolBarModes.ExportMode;
+			import panels.toolBarModes.InsertMode;
+			import panels.toolBarModes.LineMode;
+			import panels.toolBarModes.MoveScreenMode;
+			import panels.toolBarModes.SelectMode;
+			import panels.toolBarModes.TextMode;
+			import panels.toolBarModes.ToolBarModeBase;
+			import panels.toolBarModes.ZoomInMode;
+			import panels.toolBarModes.ZoomOutMode;
+			
+			[SkinPart(required="true")]
+			public var arrowBtn:IconButton;
+			
+			/**
+			 * 插入图片模式
+			 */
+			public var insertMode:ToolBarModeBase;
+			
+			/**
+			 * 创建形状模式
+			 */
+			public var shapeMode:ToolBarModeBase;
+			
+			/**
+			 * 线条系 
+			 */
+			public var lineMode:ToolBarModeBase;
+			
+			/**
+			 * 导出模式
+			 */
+			public var exportMode:ToolBarModeBase;
+			
+			/**
+			 * 选择模式
+			 */
+			public var selectMode:ToolBarModeBase;
+			
+			/**
+			 * 文字模式
+			 */
+			public var textMode:ToolBarModeBase;
+			
+			/**
+			 * 连线模式
+			 */
+			public var connectMode:ToolBarModeBase;
+			
+			/**
+			 *画线模式 
+			 */
+			public var drawLineMode:ToolBarModeBase;
+			
+			/**
+			 * 屏幕移动模式
+			 */
+			public var moveScreenMode:ToolBarModeBase;
+			
+			/**
+			 * 放大模式
+			 */
+			public var zoomInMode:ToolBarModeBase;
+			
+			/**
+			 * 缩小模式
+			 */
+			public var zoomOutMode:ToolBarModeBase;
+			
+			/**
+			 * 当前模式
+			 */
+			public var currentMode:ToolBarModeBase;
+			
+			protected function init(event:FlexEvent):void
+			{
+				initMode();
+			}
+			
+			private function initMode():void
+			{
+				insertMode = new InsertMode(this);
+				shapeMode = new CreatShapeMode(this);
+				lineMode = new LineMode(this);
+				exportMode = new ExportMode(this);
+				selectMode = new SelectMode(this);
+				textMode = new TextMode(this);
+				connectMode = new ConnectMode(this);
+				drawLineMode = new DrawLineMode(this);
+				moveScreenMode = new MoveScreenMode(this);
+				zoomInMode = new ZoomInMode(this);
+				zoomOutMode = new ZoomOutMode(this);
+				
+				
+				this.currentMode = selectMode; //初始化的时候处于选择模式
+			}
+			
+			
+			//*********************************
+			//
+			// 状态切换
+			//
+			//*********************************
+			public function toInsertMode():void
+			{
+				exchangeMode(insertBtn);
+			}
+			
+			public function toSelectedMode():void
+			{
+				exchangeMode(arrowBtn);
+			}
+			
+			public function toShapeMode():void
+			{
+				exchangeMode(shapeBtn);
+			}
+			
+			public function toLineMode():void
+			{
+				exchangeMode(connectorBtn);
+			}
+			
+			public function toTextMode():void
+			{
+				exchangeMode(textBtn);
+			}
+			
+			public function toConnectMode():void
+			{
+				currentButton.selected = false;
+				currentButton.mouseEnabled = true;
+			}
+			
+			public function toMoveScreenMode():void
+			{
+				exchangeMode(moveScreenBtn);
+			}
+			
+			public function toZoomInMode():void
+			{
+				exchangeMode(zoomInScreenBtn);
+			}
+			
+			public function toZoomOutMode():void
+			{
+				exchangeMode(zoomOutScreenBtn);
+			}
+			
+			public function toExportMode():void
+			{
+				exchangeMode(exportBtn);
+			}
+			
+			public function get ifTextMode():Boolean
+			{
+				return textBtn.selected;
+			}
+			
+			public function get ifConnectMode():Boolean
+			{
+				return connectorBtn.selected;
+			}
+			
+			public function get ifSelectorMode():Boolean
+			{
+				return arrowBtn.selected;
+			}
+			
+			private function exchangeMode(newMode:IconButton):void
+			{
+				currentButton.selected = false;
+				currentButton.mouseEnabled = true;
+				
+				currentButton = newMode;
+				currentButton.selected = true;
+				currentButton.mouseEnabled = false;
+			}
+
+			private var currentButton:IconButton;
+			
+			
+			//是否开启属性面板
+			private var _isShowProperty:Boolean = true;
+			
+			public function get isShowProperty():Boolean 
+			{
+				return _isShowProperty;
+			}
+			
+			public function set isShowProperty(value:Boolean):void 
+			{
+				_isShowProperty = value;
+			}
+			
+			//×××××××××××××××××××××××××××××××××××××××××××××
+			//
+			// 工具栏指令
+			//
+			//×××××××××××××××××××××××××××××××××××××××××××××
+
+			/*  exchange modes  */
+			private function insertHandler():void
+			{
+				this.dispatchEvent(new ToolBarEvent(ToolBarEvent.TO_INSERT_MODE));
+			}
+			
+			private function selecteHandler(e:MouseEvent):void
+			{
+				this.dispatchEvent(new ToolBarEvent(ToolBarEvent.TO_SELECTED_MODE));
+			}
+			
+			private function shapeHandler():void
+			{
+				this.dispatchEvent(new ToolBarEvent(ToolBarEvent.TO_SHAPE_MODE));
+			}
+
+			private function textHandler():void
+			{
+				this.dispatchEvent(new ToolBarEvent(ToolBarEvent.TO_TEXT_MODE));
+			}
+			
+			private function lineHandler():void
+			{
+				this.dispatchEvent(new ToolBarEvent(ToolBarEvent.TO_LINE_MODE));
+			}
+			
+			
+			private function propertyHandler():void
+			{
+//				if (!propertyBtn.lock)
+//				{
+//					isShowProperty = false;
+//					this.dispatchEvent(new ToolBarEvent(ToolBarEvent.HIDE_PROPERTY_PANEL));
+//					propertyBtn.selected = false;
+//					propertyBtn.lock = true;
+//				}
+//				else
+//				{
+//					isShowProperty = true;
+//					this.dispatchEvent(new ToolBarEvent(ToolBarEvent.SHOW_PROPERTY_PANEL));
+//					propertyBtn.selected = true;
+//					propertyBtn.lock = false;
+//				}
+			}
+			
+			protected function propertyBtn_clickHandler(event:MouseEvent):void
+			{
+				if (propertyBtn.selected)
+				{
+					isShowProperty = false;
+					this.dispatchEvent(new ToolBarEvent(ToolBarEvent.HIDE_PROPERTY_PANEL));
+					propertyBtn.selected = false;
+//					propertyBtn.lock = true;
+				}
+				else
+				{
+					isShowProperty = true;
+					this.dispatchEvent(new ToolBarEvent(ToolBarEvent.SHOW_PROPERTY_PANEL));
+					propertyBtn.selected = true;
+//					propertyBtn.lock = false;
+				}
+//				if (propertyBtn.lock)
+//					return;
+//				propertyBtn.selected = !propertyBtn.selected;
+//				this.dispatchEvent(new ToolBarEvent(ToolBarEvent.CLICK_PROPERTY_BTN));
+			}
+			
+			private function moveScreenHandler():void
+			{
+				this.dispatchEvent(new ToolBarEvent(ToolBarEvent.TO_MOVE_SCREEN_MODE));
+			}
+			
+			private function zoomInHandler():void
+			{
+				this.dispatchEvent(new ToolBarEvent(ToolBarEvent.TO_ZOOM_IN_MODE));
+			}
+			
+			private function zoomOutHandler():void
+			{
+				this.dispatchEvent(new ToolBarEvent(ToolBarEvent.TO_ZOOM_OUT_MODE));
+			}
+			
+			public function percentCanvasHandler():void
+			{
+				if (ispercent)
+				{
+					this.dispatchEvent(new ToolBarEvent(ToolBarEvent.PERCENT_CANVAS)); 
+					percentCanvasBtn1.visible = true;
+					percentCanvasBtn.visible = false;
+					ispercent = false;
+				}
+				else
+				{
+					this.dispatchEvent(new ToolBarEvent(ToolBarEvent.ONE_PERCENT_CANVAS)); 
+					percentCanvasBtn1.visible = false;
+					percentCanvasBtn.visible = true;
+					ispercent = true;
+				}
+			}
+			
+			public var ispercent:Boolean = true;
+			
+			private function exportHandler():void
+			{
+				this.dispatchEvent(new ToolBarEvent(ToolBarEvent.TO_EXPORT_MODE)); 
+			}
+			
+			override protected function partAdded(partName:String, instance:Object):void
+			{
+				if (instance == arrowBtn)
+				{
+					//给箭头按钮添加事件或其他初始化操作
+					arrowBtn.addEventListener(MouseEvent.MOUSE_DOWN, selecteHandler, false, 0, true);
+					currentButton = arrowBtn;
+					currentButton.selected = true;
+					currentButton.mouseEnabled = false;
+				}
+				super.partAdded(partName, instance);
+			}
+			
+			override protected function partRemoved(partName:String, instance:Object):void
+			{
+				if (instance == arrowBtn)
+				{
+					//给箭头按钮删除事件监听或其它析构操作
+				}
+				super.partRemoved(partName, instance);
+			}
+
+
+			protected function rollOverHandler(event:MouseEvent):void
+			{
+				// TODO Auto-generated method stub
+				//发送事件隐藏鼠标指针
+			}
+			
+			protected function rollOutHandler(event:MouseEvent):void
+			{
+				// TODO Auto-generated method stub
+				//发送事件显示鼠标指针
+			}
+			
+			protected function returnBtn_clickHandler(event:MouseEvent):void
+			{
+				this.dispatchEvent(new ToolBarEvent(ToolBarEvent.CLICK_RETURN_BTN)); 
+			}
+			
+			protected function nextBtn_clickHandler(event:MouseEvent):void
+			{
+				this.dispatchEvent(new ToolBarEvent(ToolBarEvent.CLICK_NEXT_BTN)); 
+			}
+			
+		]]>
+	</fx:Script>
+	<s:states>
+		<s:State name="shapeSelected"/>
+		<s:State name="shapeUnselected"/>
+	</s:states>
+	<s:currentState>shapeUnselected</s:currentState>
+	
+	<!--<fx:Style>
+		@namespace mx "library://ns.adobe.com/flex/mx";
+		mx|ToolTip
+		{
+			
+		}
+	</fx:Style> -->
+	
+	<components:IconButton id="insertBtn" toolTip="插入" image="{icon_import}" overImage="{icon_import_over}" selectedImage="{icon_import_selected}" 
+						   mouseDown="insertHandler()" left="5"/>
+	
+	
+	<s:Group id="leftBtn" verticalCenter="0" left="{130}">
+		
+		<s:layout>
+			<s:HorizontalLayout verticalAlign="middle" gap="5"/>
+		</s:layout>
+
+		<components:IconButton id="shapeBtn" toolTip="形状(S)" image="{icon_shape}" overImage="{icon_shape_over}" selectedImage="{icon_shape_selected}" 
+							   mouseDown="shapeHandler()"/>
+		
+		<components:IconButton id="textBtn" toolTip="创建文字(T)" image="{icon_text}" overImage="{icon_text_over}" selectedImage="{icon_text_selected}" 
+							   mouseDown="textHandler()"/>
+		
+		<components:IconButton id="connectorBtn" toolTip="线条" image="{icon_line}" overImage="{icon_line_over}" selectedImage="{icon_line_selected}" 
+							   mouseDown="lineHandler()"/>
+	</s:Group>
+	
+	<s:Group id="rightBtn" right="5">
+		
+		<s:layout>
+			<s:HorizontalLayout verticalAlign="middle" gap="5"/>
+		</s:layout>
+		
+		<components:IconButton id="returnBtn" toolTip="上一步" click="returnBtn_clickHandler(event)"  image="{icon_zoom_fit}" overImage="{icon_zoom_fit_over}" downImage="{icon_zoom_fit_selected}" />
+		<components:IconButton id="nextBtn" toolTip="下一步" click="nextBtn_clickHandler(event)"  image="{icon_zoom_fit}" overImage="{icon_zoom_fit_over}" downImage="{icon_zoom_fit_selected}" />
+		
+		<components:PropertyButton id="propertyBtn" toolTip="属性面板" click="propertyBtn_clickHandler(event)" doubleClick="propertyHandler()" doubleClickEnabled="true" selectedIndex="0"/>
+		
+		<components:IconButton id="moveScreenBtn" toolTip="平移画布(space)" image="{icon_hand}" overImage="{icon_hand_over}" selectedImage="{icon_hand_selected}"
+							   mouseDown="moveScreenHandler()" />
+		
+		<components:IconButton id="zoomInScreenBtn" toolTip="放大(M)" image="{icon_zoom_in}" overImage="{icon_zoom_in_over}" selectedImage="{icon_zoom_in_selected}"
+							   mouseDown="zoomInHandler()" />
+		
+		<components:IconButton id="zoomOutScreenBtn" toolTip="缩小(N)" image="{icon_zoom_out}" overImage="{icon_zoom_out_over}" selectedImage="{icon_zoom_out_selected}"
+							   mouseDown="zoomOutHandler()" />
+		
+		<s:Group>
+			<components:IconButton id="percentCanvasBtn" toolTip="画布自适应(F)" image="{icon_zoom_fit}" overImage="{icon_zoom_fit_over}" downImage="{icon_zoom_fit_selected}"
+								   click="percentCanvasHandler()" />
+			
+			<components:IconButton id="percentCanvasBtn1" visible="false" toolTip="1:1(F)" image="{icon_zoom_orign}" overImage="{icon_zoom_orign_over}" downImage="{icon_zoom_orign_selected}"
+								   click="percentCanvasHandler()"/>
+		</s:Group>
+		
+		<components:IconButton id="exportBtn" toolTip="导出" image="{icon_export}" overImage="{icon_export_over}" selectedImage="{icon_export_selected}"
+							   mouseDown="exportHandler()" />
+
+	</s:Group> 
+
+</s:SkinnableContainer>
