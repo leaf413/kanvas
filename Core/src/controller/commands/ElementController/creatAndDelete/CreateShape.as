@@ -13,6 +13,7 @@ package controller.commands.ElementController.creatAndDelete
 	
 	import util.ShapeCreator;
 	import util.ShapeVORecord;
+	import util.XMLConfigKit.XMLVOMapper;
 	
 	import view.CanvasMediator;
 	import view.Element.shapes.ShapeBase;
@@ -48,23 +49,24 @@ package controller.commands.ElementController.creatAndDelete
 			var shapeVO:ShapeVO;
 			if (notification.getBody() is Rectangle)
 			{
-				var shapeVORecor:ShapeVORecord = canvasProxy.shapeVORecord;
+//				var shapeVORecor:ShapeVORecord = canvasProxy.shapeVORecord;
 				
 				shapeVO = new ShapeVO();
 				shapeVO.id = ShapeCreator.shapeID;
 				shapeVO.type = notification.getType();
-				ShapeCreator.setShapeSize(shapeVO);
+				shapeVO.styleTempType = canvasProxy.style.currentShapeStyle.name().toString();
+				XMLVOMapper.fuck(canvasProxy.style.currentShapeStyle, shapeVO);
 				
 				shapeVO.width = (notification.getBody() as Rectangle).width;
 				shapeVO.height = (notification.getBody() as Rectangle).height;
-				shapeVO.color = shapeVORecor.color;
-				shapeVO.alpha = shapeVORecor.alpha;
-				shapeVO.frameColor = shapeVORecor.lineColor;
-				shapeVO.thickness = shapeVORecor.thickness;
-				shapeVO.frameAlpha = shapeVORecor.lineAlpha;
+//				shapeVO.color = shapeVORecor.color;
+//				shapeVO.alpha = shapeVORecor.alpha;
+//				shapeVO.frameColor = shapeVORecor.lineColor;
+//				shapeVO.thickness = shapeVORecor.thickness;
+//				shapeVO.frameAlpha = shapeVORecor.lineAlpha;
 				
-				shapeVO.position.x = (notification.getBody() as Rectangle).x;
-				shapeVO.position.y = (notification.getBody() as Rectangle).y;
+				shapeVO.x = (notification.getBody() as Rectangle).x;
+				shapeVO.y = (notification.getBody() as Rectangle).y;
 				
 				shape = ShapeCreator.getShapeUI(shapeVO) as ShapeBase;
 				

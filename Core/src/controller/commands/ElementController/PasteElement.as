@@ -45,7 +45,8 @@ package controller.commands.ElementController
 			var vo:ElementVO = canvasProxy.copyMap;
 			if (!vo)
 				return;
-			vo.position = new Point(vo.position.x + 5, vo.position.y + 5);
+			vo.x += 5;
+			vo.y += 5;
 			switch(vo.type)
 			{
 				case ElementTypes.IMAGE:

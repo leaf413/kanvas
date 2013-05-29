@@ -28,7 +28,7 @@ package util
 			}
 			catch (e:Error)
 			{
-				trace("wrong");
+				trace("GET CLASS WRONG: " + path);
 			}
 			
 			return result;

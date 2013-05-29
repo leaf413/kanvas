@@ -1,0 +1,208 @@
+<config>
+	<menu>
+		<about>关于</about>
+		<version>版本</version>
+	</menu>
+	
+	<!---------------------------------通用样式------------------------------------->
+	<template>
+
+		<!---------------------阴影---------------------------->
+		
+		<shadow  id='shadow45' color='${color}{adjustColor:0.5}' angle='45' alpha='0.8' distance='2' blur='2'/>
+		
+		<shadow  id='shadow90' color='${color}{adjustColor:0.5}' angle='90' alpha='0.8' distance='2' blur='2'/>
+		
+		<shadow  id='shadow180' color='${color}{adjustColor:0.5}' angle='180' alpha='0.8' distance='2' blur='2'/>
+		
+		<shadow  id='shadow270' color='${color}{adjustColor:0.5}' angle='270' alpha='0.8' distance='2' blur='2'/>
+		
+		<shadow  id='shadow360' color='${color}{adjustColor:0.5}' angle='270' alpha='0.8' distance='2' blur='2'/>
+		
+		 <!--------------------颜色------------------------------>
+        <colors id='Heavy'>
+			<color>#097DDA</color>
+            <color>#017E01</color>
+            <color>#A6403E</color>
+            <color>#634BA7</color>
+            <color>#9B7A15</color>
+            <color>#4E555F</color>
+		</colors>
+		<colors id='Shallow'>
+            <color>#6DCFF6</color>
+            <color>#98C045</color>
+            <color>#FE7C61</color>
+            <color>#A085D4</color>
+            <color>#FDB52F</color>
+            <color>#959595</color>
+		</colors>
+		<colors id='RGB'>
+			<color>#728F1C</color>
+			<color>#C451C8</color>
+            <color>#097DDA</color>
+            <color>#FE5B3B</color>
+            <color>#5B7C92</color>
+            <color>#AB8718</color>
+            <color>#634BA7</color>
+            <color>#FFFFFF</color>
+            <color>#111111</color>
+            
+            <color>#4AC0C0</color>
+            <color>#EF306A</color>
+            <color>#4E555F</color> 
+            <color>#2F8A93</color> 
+            <color>#6DCFF6</color>
+            <color>#9BD124</color>
+		</colors>
+		
+		 <!--------------------边框------------------------------>
+		<border id='normal' pixelHinting='true' color='${color}{adjustColor:0.7},${color}{adjustColor:0.9}' radioes='0, 255' angle='90' alpha='1,0' thikness='0.1'/>
+		
+		<border id='bold' pixelHinting='false' color='${color}{adjustColor:1.8},${color}{adjustColor:1.4}' radioes='0, 255' angle='0' alpha='1,0' thikness='3'/>
+		
+		<!--------------------特效------------------------------>
+		<effects id='normal' >
+			<shadow  color='${color}{adjustColor:0.5}' angle='45' alpha='0.8' distance='2' blur='2'/>
+		</effects>
+		
+		<effects id='special'>
+			<shadow  color='${color}{adjustColor:0.5}' angle='135' alpha='0.8' distance='2' blur='2'/>
+		</effects>
+		
+		<!--------------------文字样式------------------------------>
+		<format id='normal' font='微软雅黑' size='12' color='${color}' />
+		
+		<format id='bold' font='宋体' size='20' color='${color}' bold='true'/>
+		
+		<format id='english' font='Arial' size='${size}' color='${color}'/>
+		
+	</template>
+	
+	
+	<!--------------------自定义样式------------------------------>
+	<elementStyle>
+		<!--------------------形状样式------------------------------>
+		<shapes>
+			<default id='shapes'>
+				<style>
+					<border pixelHinting='true' color='${color}{adjustColor:0.7},${color}{adjustColor:0.9}' radioes='0, 255' angle='90' alpha='1,0' thikness='0.1'/>
+				</style>
+			</default>
+			<classic id='shapes'>
+				<style>
+					<border color='0#ffffff' alpha='0'/>
+				</style>
+			</classic>
+			<blank id='shapes'>
+				<style>
+					<border pixelHinting='true' color='${color}{adjustColor:0.7},${color}{adjustColor:0.9}' radioes='0, 255' angle='90' alpha='1,0' thikness='0.1'/>
+					<fill color='0#ffffff' alpha='0'/>
+				</style>
+				
+			</blank>
+		</shapes>
+		
+		<!--------------------图片样式------------------------------>
+		<images>
+			<default id='images'>
+				<style>
+				</style>
+			</default>
+			
+			<classic id='images'>
+				<style effects='special'>
+				</style>
+			</classic>
+			
+		</images>	
+		
+		<!--------------------文本样式------------------------------>
+		<texts>
+			<default id ='texts'>
+				<label format='normal'>
+				</label>
+				<style effects='normal'>
+				</style>
+			</default>
+			
+			<title id='texts'>
+				<label format='bold'>
+				</label>
+				<style effects='normal'>
+				</style>
+			</title>
+		</texts>
+		
+		<!--------------------线条样式------------------------------>
+		<lines>
+			<default id='lines'>
+				<style >
+					<border thikness='1'>
+					</border>
+					<fill color='${color}{adjustColor:1.8},${color}{adjustColor:1.4}' angle='90' alpha='1' />
+				</style>
+			</default>
+			
+			<bold id='lines'>
+				<style>
+					<border thikness='1'>
+					</border>
+					<fill color='${color}{adjustColor:1.8},${color}{adjustColor:1.4}' angle='90' alpha='1' />
+				</style>
+			</bold>
+		</lines>
+		
+	</elementStyle>
+		
+		
+		
+	
+		
+		<!--------------------样式模版------------------------------>
+	<styles>
+		<default id="stylesDefault">
+			<shapes>
+				<style effects='normal' border='normal'>
+					<fill color='${color}{adjustColor:1.8},${color}{adjustColor:1.4}' alpha='1'/>
+				</style>
+			</shapes>
+			<lines>
+				<style effects='normal'>
+				</style>
+			</lines>
+			<images>
+				<style effects='normal'>
+				</style>
+			</images>
+			<texts>
+				<style effects='normal'>
+				</style>
+			</texts>
+			<fill color='${color}'/>
+		</default>
+		
+		<classic id="stylesDefault">
+			<shapes>
+				<style effects='special' border='normal'>
+					<fill color='${color}{adjustColor:1.8},${color}{adjustColor:1.4}' alpha='1'/>
+				</style>
+			</shapes>
+			<lines>
+				<style effects='special'>
+				</style>
+			</lines>
+			<images>
+				<style effects='special'>
+				</style>
+			</images>
+			<texts>
+				<style effects='special'>
+				</style>
+			</texts>
+			<fill color='${color}'/>
+		</classic>
+		
+	</styles>
+		
+	
+</config>

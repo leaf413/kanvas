@@ -53,7 +53,7 @@ package controller.commands.ElementController
 			element = canvasMediator.canvas.currentElement;
 			
 			newPoint = notification.getBody() as Point;
-			oldPoint = element.vo.position;
+			oldPoint = new Point(element.vo.x,element.vo.y);
 			
 			element.moveTo(newPoint);
 			canvasProxy.renturnAndNext.saveRecord(this);

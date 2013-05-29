@@ -4,6 +4,8 @@ package model.vo
 	
 	import model.vo.interfaceVO.Ilock;
 	
+	import util.graphic.StyleManager;
+	
 	/**
 	 * 形状模型
 	 * @author foxm
@@ -31,7 +33,7 @@ package model.vo
 		/**
 		 * 内填充颜色
 		 */
-		private var _color:uint = 0x728F1C;
+		private var _color:Object = 0x728F1C;
 		
 		/**
 		 * 标题
@@ -123,18 +125,19 @@ package model.vo
 		 * @param value
 		 * 
 		 */
-		public function set color(value:uint):void
+		public function set color(value:Object):void
 		{
 			if (isLock)
 				return;
-			_color = value;
+			
+			_color = StyleManager.setColor(value);
 		}
 		/**
 		 *  获取颜色值
 		 * @return 
 		 * 
 		 */
-		public function get color():uint
+		public function get color():Object
 		{
 			return _color;
 		}

@@ -106,5 +106,14 @@ package controller.interfaceCommand
 		{
 			facade.sendNotification(CommandNames.DRAW_LINE);
 		}
+		
+		/**
+		 * 初始化全局样式
+		 */
+		public function InitStyles(xml:XML):void
+		{
+			facade.sendNotification(CommandNames.INIT_CANVAS_STYLE,xml);
+		}
+		
 	}
 }

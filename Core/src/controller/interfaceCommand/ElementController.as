@@ -217,5 +217,13 @@ package controller.interfaceCommand
 		{
 			facade.sendNotification(CommandNames.DRAG_ELEMENT);
 		}
+		
+		/**
+		 * 设置样式
+		 */
+		public function setStyle(xml:XML):void
+		{
+			facade.sendNotification(CommandNames.SET_STYLE, xml);
+		}
 	}
 }

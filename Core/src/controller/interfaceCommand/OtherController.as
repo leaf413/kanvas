@@ -1,6 +1,8 @@
 package controller.interfaceCommand
 {
 	import controller.commands.CommandNames;
+	
+	import util.XMLConfigKit.XMLVOLib;
 
 	/**
 	 * 未分类控制
@@ -62,6 +64,36 @@ package controller.interfaceCommand
 		public function previous():void
 		{
 			facade.sendNotification(CommandNames.RETURN_CONTROL);
+		}
+		
+		/**
+		 * 改变全体样式
+		 * @param xml
+		 * 
+		 */
+		public function changeCanvasStyle(xml:XML):void
+		{
+			facade.sendNotification(CommandNames.CHANGE_CANVAS_STYLE, xml);
+		}
+		
+		/**
+		 * 测试样式改变随时可以删除
+		 * 
+		 */
+		private var test:Boolean = true;
+		public function testStyleChange():void
+		{
+			if (test)
+			{
+				changeCanvasStyle(XMLVOLib.getXML('stylesDefault', 'classic'));
+				test = false;
+			}
+			else
+			{
+				changeCanvasStyle(XMLVOLib.getXML('stylesDefault', 'default'));
+				test = true;
+			}
+				
 		}
 		
 	}

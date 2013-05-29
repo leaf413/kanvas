@@ -145,7 +145,6 @@ package view.Element
 		public function dragingElement(preView:Sprite):void
 		{
 			preView.startDrag();
-			
 		}
 		
 		/**
@@ -155,6 +154,7 @@ package view.Element
 		 */
 		public function stopDragElement(preView:Sprite):void
 		{
+//			moveTo(new Point(preView.x,preView.y));
 			stage.removeEventListener(MouseEvent.MOUSE_MOVE, mouseMoveHandler);
 			preView.stopDrag();
 		}
@@ -166,7 +166,8 @@ package view.Element
 		 */
 		public function moveTo(value:Point):void
 		{
-			vo.position = value;
+			vo.x = value.x;
+			vo.y = value.y;
 			updateLayout();
 			dispatchEvent(new ElementEvent(ElementEvent.UPDATE_SIZE_AND_POSITION));
 		}
@@ -297,8 +298,8 @@ package view.Element
 		 */
 		public function updateLayout():void
 		{
-			this.x = vo.position.x;
-			this.y = vo.position.y;
+			this.x = vo.x;
+			this.y = vo.y;
 		}
 		
 		/**
@@ -307,7 +308,7 @@ package view.Element
 		public function drawBG():void
 		{
 			bg.graphics.clear();
-			bg.graphics.beginFill(0xe0e0e0, 0.5);
+			bg.graphics.beginFill(0xe0e0e0, 0.2);
 			bg.graphics.drawRect(0, 0, vo.width, vo.height);
 			bg.graphics.endFill();
 		}

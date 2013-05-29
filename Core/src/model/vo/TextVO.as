@@ -2,6 +2,8 @@ package model.vo
 {
 	import flash.events.IEventDispatcher;
 	
+	import util.XMLConfigKit.style.LabelStyle;
+	
 	/**
 	 * 文字数据
 	 * @author foxm
@@ -12,12 +14,12 @@ package model.vo
 		/**
 		 * 文字
 		 */
-		public var label:String = "";
+		public var text:String = "";
 		
 		/**
 		 * 文字颜色
 		 */
-		private var _color:Number = 0;
+		private var _color:Object = 0x000000;
 		
 		/**
 		 * 自动换行
@@ -49,10 +51,16 @@ package model.vo
 		 */		
 		private var _align:String = "left";
 		
+		
 		/**
 		 * 文字倾斜
 		 */
 		private var _italic:Boolean = false;
+		
+		/**
+		 * 文本样式
+		 */
+		private var _label:LabelStyle;
 		
 		
 		public function TextVO(target:IEventDispatcher=null)
@@ -187,7 +195,7 @@ package model.vo
 		 * @param value
 		 * 
 		 */
-		public function set color(value:Number):void
+		public function set color(value:Object):void
 		{
 			_color = value;
 		}
@@ -197,9 +205,20 @@ package model.vo
 		 * @return 
 		 * 
 		 */
-		public function get color():Number
+		public function get color():Object
 		{
 			return _color;
 		}
+		
+		public function set label(value:LabelStyle):void 
+		{
+			_label = value;
+		}
+		
+		public function get label():LabelStyle 
+		{
+			return _label;
+		}
+		
 	}
 }

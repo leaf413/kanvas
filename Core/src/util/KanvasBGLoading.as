@@ -1,8 +1,9 @@
 package util
 {
+	import com.greensock.TweenLite;
+	
 	import flash.display.Sprite;
 	
-	import util.tween.TweenLite;
 	
 	/**
 	 *知识管理地图与预览地图背景的加载控制 
@@ -22,14 +23,14 @@ package util
 		 */
 		public function show():void
 		{ 
-			TweenLite.goto(loadingImage, .3, {alpha: 1});
+			TweenLite.to(loadingImage, .3, {alpha: 1});
 		}
 		
 		/**
 		 */		
 		public function hide():void
 		{
-			TweenLite.goto(loadingImage, .3, {alpha: 0});
+			TweenLite.to(loadingImage, .3, {alpha: 0});
 		}
 		
 		/**

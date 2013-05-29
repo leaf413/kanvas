@@ -1,6 +1,8 @@
 package components.palette
 {
 	
+	import components.IconButton;
+	
 	import flash.events.Event;
 	import flash.events.KeyboardEvent;
 	import flash.events.MouseEvent;
@@ -8,7 +10,6 @@ package components.palette
 	
 	import flashx.textLayout.elements.BreakElement;
 	
-	import components.IconButton;
 	import skins.ColorInputSkin;
 	
 	import spark.components.Button;

@@ -13,6 +13,7 @@ package controller.commands.ElementController.creatAndDelete
 	
 	import util.ShapeCreator;
 	import util.ShapeVORecord;
+	import util.XMLConfigKit.XMLVOMapper;
 	import util.type.ElementTypes;
 	
 	import view.CanvasMediator;
@@ -67,19 +68,21 @@ package controller.commands.ElementController.creatAndDelete
 				textVO.id = ShapeCreator.shapeID;
 				textVO.type = ElementTypes.TEXT;
 				
-				ShapeCreator.setShapeSize(textVO);
-				(textVO as TextVO).align = shapeVORecor.align;
-				(textVO as TextVO).bold = shapeVORecor.isBold;
-				(textVO as TextVO).color = shapeVORecor.color;
-				(textVO as TextVO).font = shapeVORecor.font;
-				(textVO as TextVO).italic = shapeVORecor.italic;
-				(textVO as TextVO).size = shapeVORecor.fontSize;
-				(textVO as TextVO).underline = shapeVORecor.underline;
-				(textVO as TextVO).alpha = shapeVORecor.alpha;
+//				ShapeCreator.setShapeIDeSize(textVO);
+//				(textVO as TextVO).align = shapeVORecor.align;
+//				(textVO as TextVO).bold = shapeVORecor.isBold;
+//				(textVO as TextVO).color = shapeVORecor.color;
+//				(textVO as TextVO).font = shapeVORecor.font;
+//				(textVO as TextVO).italic = shapeVORecor.italic;
+//				(textVO as TextVO).size = shapeVORecor.fontSize;
+//				(textVO as TextVO).underline = shapeVORecor.underline;
+//				(textVO as TextVO).alpha = shapeVORecor.alpha;
 				
+				textVO.styleTempType = canvasProxy.style.currentTextStyle.name().toString();
+				XMLVOMapper.fuck(canvasProxy.style.currentTextStyle, textVO);
 				
-				textVO.position.x = (notification.getBody() as Point).x;
-				textVO.position.y = (notification.getBody() as Point).y;
+				textVO.x = (notification.getBody() as Point).x;
+				textVO.y = (notification.getBody() as Point).y;
 				
 				// Create shapeUI.
 				text = ShapeCreator.getShapeUI(textVO) as Text;

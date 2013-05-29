@@ -2,6 +2,8 @@ package view.Element.shapes
 {
 	import model.vo.ShapeVO;
 	
+	import util.graphic.StyleManager;
+	
 	/**
 	 * 三角形
 	 * @author foxm
@@ -23,19 +25,13 @@ package view.Element.shapes
 			
 			var startX:Number = vo.width / 2 ;
 			var startY:Number = vo.height / 2 ;
-			
-			shape.graphics.moveTo(startX, startY - vo.height / 2 );
-			shape.graphics.lineTo(startX - vo.width / 2 , startY + vo.height / 2 );
-			shape.graphics.lineTo(startX + vo.width / 2 , startY + vo.height / 2 );
-			shape.graphics.lineTo(startX , startY - vo.height / 2 );
-			shape.graphics.endFill();
-			
-			frame.graphics.lineStyle((vo as ShapeVO).thickness, (vo as ShapeVO).frameColor, (vo as ShapeVO).frameAlpha);
-			frame.graphics.moveTo(startX, startY - vo.height / 2 );
-			frame.graphics.lineTo(startX - vo.width / 2 , startY + vo.height / 2 );
-			frame.graphics.lineTo(startX + vo.width / 2 , startY + vo.height / 2 );
-			frame.graphics.lineTo(startX , startY - vo.height / 2 );
-			frame.graphics.endFill();
+			StyleManager.setShapeStyle(vo.style, graphics, vo);
+			graphics.moveTo(startX, startY - vo.height / 2 );
+			graphics.lineTo(startX - vo.width / 2 , startY + vo.height / 2 );
+			graphics.lineTo(startX + vo.width / 2 , startY + vo.height / 2 );
+			graphics.lineTo(startX , startY - vo.height / 2 );
+			graphics.endFill();
+			StyleManager.setEffects(this, vo.style); 
 		}
 	}
 }

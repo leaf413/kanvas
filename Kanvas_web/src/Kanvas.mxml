@@ -44,7 +44,7 @@
 			{
 				stage.addEventListener(Event.RESIZE, resizeHandler, false, 0, true);
 				coreApp = new CoreApp();
-				coreApp.canvas.renderBG(stage.stageWidth, stage.stageHeight);
+//				coreApp.canvas.renderBG(stage.stageWidth, stage.stageHeight);
 				coreAppContainer.addChild(coreApp);
 				coreApp.renderBG();
 				listentCanvas();
@@ -136,10 +136,10 @@
 							case ElementTypes.LINE:
 								toolBar.dispatchEvent(new PropertyPanelEvent(PropertyPanelEvent.PROPERTY_TO_CONNECT));
 								shapeScaleControl.currentState = "line";
-								shapeScaleControl.startX = ((e.element.vo as LineVO).startPoint.x - (e.element.vo as LineVO).position.x) * coreApp.canvas.scaleX;
-								shapeScaleControl.startY = ((e.element.vo as LineVO).startPoint.y - (e.element.vo as LineVO).position.y) * coreApp.canvas.scaleX;
-								shapeScaleControl.endX = ((e.element.vo as LineVO).endPoint.x - (e.element.vo as LineVO).position.x) * coreApp.canvas.scaleX;
-								shapeScaleControl.endY = ((e.element.vo as LineVO).endPoint.y - (e.element.vo as LineVO).position.y) * coreApp.canvas.scaleX;
+								shapeScaleControl.startX = ((e.element.vo as LineVO).startX - e.element.x) * coreApp.canvas.scaleX;
+								shapeScaleControl.startY = ((e.element.vo as LineVO).startY - e.element.y) * coreApp.canvas.scaleX;
+								shapeScaleControl.endX = ((e.element.vo as LineVO).endX - e.element.x) * coreApp.canvas.scaleX;
+								shapeScaleControl.endY = ((e.element.vo as LineVO).endY - e.element.y) * coreApp.canvas.scaleX;
 								break;
 							
 							case ElementTypes.TEXT:
@@ -546,7 +546,8 @@
 						coreApp.otherController.next();
 						break;
 					case ToolBarEvent.CLICK_RETURN_BTN:
-						coreApp.otherController.previous();
+//						coreApp.otherController.previous();暂时借用这个按钮
+						coreApp.otherController.testStyleChange();
 						break;
 				}
 			}

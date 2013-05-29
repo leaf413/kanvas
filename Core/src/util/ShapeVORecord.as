@@ -20,7 +20,7 @@ package util
 		
 		public var lineColor:uint = 0x728F1C;
 		
-		public var color:uint = 0x728F1C;
+		public var color:Object = 0x728F1C;
 		
 		public var isBold:Boolean = false;
 		

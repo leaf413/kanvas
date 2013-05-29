@@ -455,7 +455,7 @@
 			
 			protected function leftC_mouseDownHandler(event:MouseEvent):void
 			{
-				var rect:Rectangle=new Rectangle(- shapeVO.position.x,leftC.y - 4.5,stage.stageWidth,0);
+				var rect:Rectangle=new Rectangle(- shapeVO.x,leftC.y - 4.5,stage.stageWidth,0);
 				leftC.startDrag(false,rect);
 				stage.addEventListener(MouseEvent.MOUSE_MOVE,leftC_mouseMoveHandler);
 				stage.addEventListener(MouseEvent.MOUSE_UP,leftC_mouseUpHandler);
@@ -540,7 +540,7 @@
 			
 			protected function topC_mouseDownHandler(event:MouseEvent):void
 			{
-				var rect:Rectangle=new Rectangle(topC.x - 4.5, - shapeVO.position.y, 0, stage.stageHeight);
+				var rect:Rectangle=new Rectangle(topC.x - 4.5, - shapeVO.y, 0, stage.stageHeight);
 				topC.startDrag(false, rect);
 				stage.addEventListener(MouseEvent.MOUSE_MOVE, topC_mouseMoveHandler);
 				stage.addEventListener(MouseEvent.MOUSE_UP, topC_mouseUpHandler);

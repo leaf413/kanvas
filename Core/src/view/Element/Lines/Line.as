@@ -5,6 +5,8 @@ package view.Element.Lines
 	
 	import model.vo.LineVO;
 	
+	import util.graphic.StyleManager;
+	
 	/**
 	 * 线条
 	 * @author foxm
@@ -44,33 +46,33 @@ package view.Element.Lines
 		override public function render():void
 		{
 			super.render();
+			StyleManager.setShapeStyle(vo.style, graphics, vo);
 			
-			line.graphics.clear();
-			line.graphics.lineStyle((vo as LineVO).thickness, (vo as LineVO).color, (vo as LineVO).alpha);
-			
-			if ((vo as LineVO).startPoint.x < (vo as LineVO).endPoint.x)
+			graphics.lineStyle(Number((vo as LineVO).style.border.thikness), uint((vo as LineVO).color));
+			if ((vo as LineVO).startX< (vo as LineVO).endX)
 			{
-				line.graphics.moveTo(startXY.x, startXY.y);
-				line.graphics.lineTo(endXY.x, endXY.y);
+				graphics.moveTo(startXY.x, startXY.y);
+				graphics.lineTo(endXY.x, endXY.y);
 			}
 			else
 			{
-				line.graphics.moveTo(endXY.x, endXY.y);
-				line.graphics.lineTo(startXY.x, startXY.y);
+				graphics.moveTo(endXY.x, endXY.y);
+				graphics.lineTo(startXY.x, startXY.y);
 			}
 			
-			line.graphics.endFill();
-			drawStartArrow();
-			drawEndArrow();
-			arrowUpdate();
+			graphics.endFill();
+			StyleManager.setEffects(this, vo.style);
+//			drawStartArrow();
+//			drawEndArrow();
+//			arrowUpdate();
 		}
 		
 		override public function moveTo(value:Point):void
 		{
-			(vo as LineVO).startPoint.x += value.x - this.x;
-			(vo as LineVO).startPoint.y += value.y - this.y;
-			(vo as LineVO).endPoint.x += value.x - this.x;
-			(vo as LineVO).endPoint.y += value.y - this.y;
+			(vo as LineVO).startX += value.x - this.x;
+			(vo as LineVO).startY += value.y - this.y;
+			(vo as LineVO).endX += value.x - this.x;
+			(vo as LineVO).endY += value.y - this.y;
 			super.moveTo(value);
 		}
 		
@@ -79,33 +81,33 @@ package view.Element.Lines
 		 */
 		override public function updateLayout():void
 		{
-			if ((vo as LineVO).startPoint.x < (vo as LineVO).endPoint.x)
+			if ((vo as LineVO).startX < (vo as LineVO).endX)
 			{
-				this.x = (vo as LineVO).startPoint.x;
+				this.x = (vo as LineVO).startX;
 			}
 			else
 			{
-				this.x = (vo as LineVO).endPoint.x;
+				this.x = (vo as LineVO).endX;
 			}
 			
-			if ((vo as LineVO).startPoint.y < (vo as LineVO).endPoint.y)
+			if ((vo as LineVO).startY < (vo as LineVO).endY)
 			{
-				this.y = (vo as LineVO).startPoint.y;
+				this.y = (vo as LineVO).startY;
 			}
 			else
 			{
-				this.y = (vo as LineVO).endPoint.y;
+				this.y = (vo as LineVO).endY;
 			}
 		}
 		
-		/**
-		 * 箭头更新
-		 */
-		public function arrowUpdate():void
-		{
-			startArrow.visible = (vo as LineVO).startArrow;
-			endArrow.visible = (vo as LineVO).endArrow;
-		}
+//		/**
+//		 * 箭头更新
+//		 */
+//		public function arrowUpdate():void
+//		{
+//			startArrow.visible = (vo as LineVO).startArrow;
+//			endArrow.visible = (vo as LineVO).endArrow;
+//		}
 		
 		/**
 		 * 显示开始点箭头
@@ -142,48 +144,48 @@ package view.Element.Lines
 		/**
 		 * 画开始箭头
 		 */
-		private function drawStartArrow():void
-		{
-			startArrow.graphics.clear();
-			startArrow.graphics.beginFill((vo as LineVO).color);
-			startArrow.graphics.moveTo((0 + arrowValue) * (vo as LineVO).thickness, 0  * (vo as LineVO).thickness);
-			startArrow.graphics.lineTo((- 10 + arrowValue) * (vo as LineVO).thickness, -5 * (vo as LineVO).thickness);
-			startArrow.graphics.lineTo((-10 + arrowValue) * (vo as LineVO).thickness, 5  * (vo as LineVO).thickness);
-			startArrow.graphics.lineTo((0 + arrowValue) * (vo as LineVO).thickness, 0 * (vo as LineVO).thickness);
-			startArrow.graphics.endFill();
-			startArrow.x = startXY.x;
-			startArrow.y = startXY.y;
-			var f:Number = ((vo as LineVO).endPoint.y - (vo as LineVO).startPoint.y) / ((vo as LineVO).endPoint.x - (vo as LineVO).startPoint.x);
-			var angle:Number = Math.atan(f) * 180 / Math.PI;
-			if((vo as LineVO).endPoint.x >= (vo as LineVO).startPoint.x)
-			{
-				angle-=180;
-			}
-			startArrow.rotation=angle;
-		}
+//		private function drawStartArrow():void
+//		{
+//			startArrow.graphics.clear();
+//			startArrow.graphics.beginFill((vo as LineVO).color);
+//			startArrow.graphics.moveTo((0 + arrowValue) * (vo as LineVO).thickness, 0  * (vo as LineVO).thickness);
+//			startArrow.graphics.lineTo((- 10 + arrowValue) * (vo as LineVO).thickness, -5 * (vo as LineVO).thickness);
+//			startArrow.graphics.lineTo((-10 + arrowValue) * (vo as LineVO).thickness, 5  * (vo as LineVO).thickness);
+//			startArrow.graphics.lineTo((0 + arrowValue) * (vo as LineVO).thickness, 0 * (vo as LineVO).thickness);
+//			startArrow.graphics.endFill();
+//			startArrow.x = startXY.x;
+//			startArrow.y = startXY.y;
+//			var f:Number = ((vo as LineVO).endPoint.y - (vo as LineVO).startPoint.y) / ((vo as LineVO).endPoint.x - (vo as LineVO).startPoint.x);
+//			var angle:Number = Math.atan(f) * 180 / Math.PI;
+//			if((vo as LineVO).endPoint.x >= (vo as LineVO).startPoint.x)
+//			{
+//				angle-=180;
+//			}
+//			startArrow.rotation=angle;
+//		}
 		
 		/**
 		 * 画结束箭头
 		 */
-		private function drawEndArrow():void
-		{
-			endArrow.graphics.clear();
-			endArrow.graphics.beginFill((vo as LineVO).color);
-			endArrow.graphics.moveTo((0 + arrowValue) * (vo as LineVO).thickness, 0 * (vo as LineVO).thickness);
-			endArrow.graphics.lineTo((- 10 + arrowValue) * (vo as LineVO).thickness, - 5 * (vo as LineVO).thickness);
-			endArrow.graphics.lineTo((- 10 + arrowValue) * (vo as LineVO).thickness, 5  * (vo as LineVO).thickness);
-			endArrow.graphics.lineTo((0 + arrowValue) * (vo as LineVO).thickness, 0 * (vo as LineVO).thickness);
-			endArrow.graphics.endFill();
-			endArrow.x = endXY.x;
-			endArrow.y = endXY.y;
-			var f:Number = ((vo as LineVO).startPoint.y - (vo as LineVO).endPoint.y) / ((vo as LineVO).startPoint.x - (vo as LineVO).endPoint.x);
-			var angle:Number = Math.atan(f) * 180 / Math.PI;
-			if((vo as LineVO).endPoint.x <= (vo as LineVO).startPoint.x)
-			{
-				angle-=180;
-			}
-			endArrow.rotation=angle;
-		}
+//		private function drawEndArrow():void
+//		{
+//			endArrow.graphics.clear();
+//			endArrow.graphics.beginFill((vo as LineVO).color);
+//			endArrow.graphics.moveTo((0 + arrowValue) * (vo as LineVO).thickness, 0 * (vo as LineVO).thickness);
+//			endArrow.graphics.lineTo((- 10 + arrowValue) * (vo as LineVO).thickness, - 5 * (vo as LineVO).thickness);
+//			endArrow.graphics.lineTo((- 10 + arrowValue) * (vo as LineVO).thickness, 5  * (vo as LineVO).thickness);
+//			endArrow.graphics.lineTo((0 + arrowValue) * (vo as LineVO).thickness, 0 * (vo as LineVO).thickness);
+//			endArrow.graphics.endFill();
+//			endArrow.x = endXY.x;
+//			endArrow.y = endXY.y;
+//			var f:Number = ((vo as LineVO).startPoint.y - (vo as LineVO).endPoint.y) / ((vo as LineVO).startPoint.x - (vo as LineVO).endPoint.x);
+//			var angle:Number = Math.atan(f) * 180 / Math.PI;
+//			if((vo as LineVO).endPoint.x <= (vo as LineVO).startPoint.x)
+//			{
+//				angle-=180;
+//			}
+//			endArrow.rotation=angle;
+//		}
 		
 		/**
 		 * 画背景
@@ -191,8 +193,8 @@ package view.Element.Lines
 		override public function drawBG():void
 		{
 			bg.graphics.clear();
-			bg.graphics.lineStyle((vo as LineVO).thickness + 10, 0xe0e0e0, 0.5);
-			if ((vo as LineVO).startPoint.x < (vo as LineVO).endPoint.x)
+			bg.graphics.lineStyle((vo as LineVO).thickness + 10, 0xe0e0e0, 0.2);
+			if ((vo as LineVO).startX < (vo as LineVO).endX)
 			{
 				bg.graphics.moveTo(startXY.x, startXY.y);
 				bg.graphics.lineTo(endXY.x, endXY.y);
@@ -207,12 +209,12 @@ package view.Element.Lines
 		
 		private function get startXY():Point 
 		{
-			return new Point((vo as LineVO).startPoint.x - x, (vo as LineVO).startPoint.y - y);
+			return new Point((vo as LineVO).startX - x, (vo as LineVO).startY - y);
 		}
 		
 		private function get endXY():Point 
 		{
-			return new Point((vo as LineVO).endPoint.x - x, (vo as LineVO).endPoint.y - y);
+			return new Point((vo as LineVO).endX - x, (vo as LineVO).endY - y);
 		}
 	}
 }

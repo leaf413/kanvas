@@ -13,16 +13,24 @@ package view.Element.Lines
 	 */
 	public class LineBase extends ElementBase
 	{
-		/**
-		 * 线条容器
-		 */
-		protected var line:Sprite;
 		
 		public function LineBase(vo:LineVO)
 		{
-			line = new Sprite();
 			super(vo);
-			this.addChild(line);
+		}
+		
+		/**
+		 * 渲染
+		 */
+		override public function render():void
+		{
+			super.render();
+			graphics.clear();
+			alpha = (vo as LineVO).alpha;
+			vo.style.tx = - vo.width / 2;
+			vo.style.ty = - vo.height / 2;
+			vo.style.width = vo.width;
+			vo.style.height = vo.height;
 		}
 		
 	}

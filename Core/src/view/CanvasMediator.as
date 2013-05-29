@@ -75,7 +75,7 @@ package view
 			canvas.addEventListener(ElementEvent.MOUSE_DOWN, downElement, false, 0, true);
 			canvas.addEventListener(ElementEvent.MOUSE_OVER_EDIT_TEXT, overEditText, false, 0, true);
 			canvas.addEventListener(ElementEvent.MOUSE_OUT_EDIT_TEXT, overEditText, false, 0, true);
-			canvas.addEventListener(ElementEvent.MOUSE_UP, stopMoveElement, false, 0, true);
+			canvas.stage.addEventListener(ElementEvent.MOUSE_UP, stopMoveElement, false, 0, true);
 			canvas.addEventListener(ElementEvent.MOUSE_MOVE, dragingElement, false, 0, true);
 			canvas.parent.addEventListener(MouseEvent.MOUSE_DOWN, downCanvas);
 			canvas.parent.addEventListener(MouseEvent.ROLL_OUT, outCanvas);
@@ -159,7 +159,8 @@ package view
 		 */
 		private function dragingElement(e:ElementEvent):void
 		{
-			canvas.currentElement.dragingElement(canvas.preView);
+			if (canvas.currentElement)
+				canvas.currentElement.dragingElement(canvas.preView);
 		}
 		
 		/**
@@ -167,10 +168,10 @@ package view
 		 */
 		private function stopMoveElement(e:Event):void
 		{
-			canvas.removeEventListener(MouseEvent.MOUSE_UP, stopMoveElement);
+			canvas.stage.removeEventListener(MouseEvent.MOUSE_UP, stopMoveElement);
 			canvas.cleanPreView();
-			canvas.currentElement.stopDragElement(canvas.preView);
 			sendNotification(CommandNames.MOVE_ELEMENT, new Point(canvas.preView.x, canvas.preView.y));
+			canvas.currentElement.stopDragElement(canvas.preView);
 			canvas.cleanPreViewPosition();
 		}
 		
@@ -181,7 +182,7 @@ package view
 		 */
 		public function startMoveElement():void
 		{
-			canvas.addEventListener(MouseEvent.MOUSE_UP, stopMoveElement, false, 0, true);
+			canvas.stage.addEventListener(MouseEvent.MOUSE_UP, stopMoveElement, false, 0, true);
 			canvas.cleanPreView();
 			canvas.currentElement.startDragElement(canvas.preView);
 		}

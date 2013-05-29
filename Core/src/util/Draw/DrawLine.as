@@ -118,8 +118,10 @@ package util.Draw
 			
 			var complete:DrawEvent = new DrawEvent(DrawEvent.DRAW_LINE_COMPLETE);
 			var lineVO:LineVO = new LineVO();
-			lineVO.startPoint = new Point(startX, startY);
-			lineVO.endPoint = new Point(endX, endY);
+			lineVO.startX = startX;
+			lineVO.startY = startY;
+			lineVO.endX = endX;
+			lineVO.endY = endY;
 			lineVO.width = endX - startX;
 			lineVO.height = endY - startY;
 			complete.lineData = lineVO;

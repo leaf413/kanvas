@@ -2,6 +2,8 @@ package view.Element.shapes
 {
 	import model.vo.ShapeVO;
 	
+	import util.graphic.StyleManager;
+	
 	/**
 	 * 多边形
 	 * @author foxm
@@ -30,24 +32,19 @@ package view.Element.shapes
 			var starY:Number;
 			var rad:Number;
 			var radPart:Number = Math.PI * 2 / 5;
-			
-			shape.graphics.moveTo(startX, startY - radiusY);
-			frame.graphics.lineStyle((vo as ShapeVO).thickness,(vo as ShapeVO).frameColor, (vo as ShapeVO).frameAlpha);
-			frame.graphics.moveTo(startX, startY - radiusY);
+			StyleManager.setShapeStyle(vo.style, graphics, vo);
+			graphics.moveTo(startX, startY - radiusY);
 			for (var i:uint = 1; i < 5; i ++)
 			{
 				rad = Math.PI / 2 + radPart * i;
 				starX = startX + Math.cos(rad) * radiusX;
 				starY = startY - Math.sin(rad) * radiusY;
-				shape.graphics.lineTo(starX, starY);
-				frame.graphics.lineTo(starX, starY);
+				graphics.lineTo(starX, starY);
 			}
 			
-			shape.graphics.lineTo(startX, startY- radiusY);
-			shape.graphics.endFill();
-			
-			frame.graphics.lineTo(startX, startY- radiusY);
-			frame.graphics.endFill();
+			graphics.lineTo(startX, startY- radiusY);
+			graphics.endFill();
+			StyleManager.setEffects(this, vo.style); 
 		}
 	}
 }

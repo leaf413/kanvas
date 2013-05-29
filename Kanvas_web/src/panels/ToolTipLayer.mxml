@@ -17,7 +17,7 @@
 			
 			import util.KanvasBGLoading;
 			import util.Prompt;
-			import util.layout.DispLayout;
+			import util.layout.LayoutManager;
 			import util.type.ScaleControlTypeNames;
 			
 			private var loadingAlert:KanvasBGLoading = new KanvasBGLoading();
@@ -87,7 +87,7 @@
 			private function init():void
 			{
 				this.addChild(loadingAlert);
-				DispLayout.excuteLayout(this.loadingAlert, this);
+				LayoutManager.stageCenter(this.loadingAlert, this.stage);
 				
 				this.addChild(prompt);
 				
@@ -291,7 +291,7 @@
 			 */
 			private function resizeHandler(evt:ResizeEvent):void
 			{
-				DispLayout.excuteLayout(this.loadingAlert, this);
+				LayoutManager.stageCenter(this.loadingAlert, this.stage);
 				//这里应该加 尺寸大小提示更变
 			}
 			

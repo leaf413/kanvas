@@ -12,6 +12,7 @@ package controller.commands.ElementController.creatAndDelete
 	import org.puremvc.as3.patterns.command.SimpleCommand;
 	
 	import util.ShapeCreator;
+	import util.XMLConfigKit.XMLVOMapper;
 	import util.type.ElementTypes;
 	
 	import view.CanvasMediator;
@@ -49,6 +50,8 @@ package controller.commands.ElementController.creatAndDelete
 			{
 				var vo:ImageVO = new ImageVO();
 				vo.id = ShapeCreator.shapeID;
+				vo.styleTempType = canvasProxy.style.currentimageStyle.name().toString();
+				XMLVOMapper.fuck(canvasProxy.style.currentShapeStyle, vo);
 				vo.bitmapID = canvasProxy.imageMap.id;
 				vo.type = ElementTypes.IMAGE;
 				vo.width = (notification.getBody() as Bitmap).width;
@@ -57,8 +60,8 @@ package controller.commands.ElementController.creatAndDelete
 				canvasProxy.imageMap.setBitmap(vo.bitmapID.toString(), (notification.getBody() as Bitmap));
 				vo.setBitmap = canvasProxy.imageMap.getBitmap(vo.bitmapID.toString());
 				
-				vo.position.x = (canvasMediator.canvas.stage.stageWidth - vo.width) / 2;
-				vo.position.y = (canvasMediator.canvas.stage.stageHeight - vo.height) / 2;
+				vo.x = (canvasMediator.canvas.stage.stageWidth - vo.width) / 2;
+				vo.y = (canvasMediator.canvas.stage.stageHeight - vo.height) / 2;
 				
 				image = ShapeCreator.getShapeUI(vo);
 				create(image);

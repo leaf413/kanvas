@@ -2,6 +2,8 @@ package view.Element.shapes
 {
 	import model.vo.ShapeVO;
 	
+	import util.graphic.StyleManager;
+	
 	/**
 	 * 梯形
 	 * @author foxm
@@ -20,21 +22,14 @@ package view.Element.shapes
 		override public function render():void
 		{
 			super.render();
-			
-			shape.graphics.moveTo(vo.width / 5, 0);
-			shape.graphics.lineTo(vo.width * 4 / 5,0);
-			shape.graphics.lineTo(vo.width, vo.height);
-			shape.graphics.lineTo(0, vo.height);
-			shape.graphics.lineTo(vo.width / 5, 0);
-			shape.graphics.endFill();
-			
-			frame.graphics.lineStyle((vo as ShapeVO).thickness, (vo as ShapeVO).frameColor, (vo as ShapeVO).frameAlpha);
-			frame.graphics.moveTo(vo.width / 5, 0);
-			frame.graphics.lineTo(vo.width * 4 / 5,0);
-			frame.graphics.lineTo(vo.width, vo.height);
-			frame.graphics.lineTo(0, vo.height);
-			frame.graphics.lineTo(vo.width / 5, 0);
-			frame.graphics.endFill();
+			StyleManager.setShapeStyle(vo.style, graphics, vo);
+			graphics.moveTo(vo.width / 5, 0);
+			graphics.lineTo(vo.width * 4 / 5,0);
+			graphics.lineTo(vo.width, vo.height);
+			graphics.lineTo(0, vo.height);
+			graphics.lineTo(vo.width / 5, 0);
+			graphics.endFill();
+			StyleManager.setEffects(this, vo.style); 
 		}
 	}
 }

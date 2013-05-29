@@ -10,17 +10,23 @@ package
 	import controller.commands.ElementController.MoveElement;
 	import controller.commands.ElementController.PasteElement;
 	import controller.commands.ElementController.SetCurrentElement;
+	import controller.commands.ElementController.SetStyle;
 	import controller.commands.ElementController.creatAndDelete.CreateGroup;
 	import controller.commands.ElementController.creatAndDelete.CreateImage;
 	import controller.commands.ElementController.creatAndDelete.CreateLine;
 	import controller.commands.ElementController.creatAndDelete.CreateShape;
 	import controller.commands.ElementController.creatAndDelete.CreateText;
 	import controller.commands.canvasController.ChangeBGColor;
+	import controller.commands.canvasController.ChangeStyle;
 	import controller.commands.canvasController.DrawFame;
 	import controller.commands.canvasController.DrawLine;
+	import controller.commands.canvasController.InitStyles;
+	import controller.commands.canvasController.RenderCanvas;
 	import controller.commands.canvasController.StartDragCanvas;
 	import controller.commands.canvasController.StopDragCanvas;
 	import controller.commands.canvasController.ZoomCanvas;
+	import controller.commands.toolController.ExportFile;
+	import controller.commands.toolController.ImportFile;
 	import controller.commands.toolController.InserImage;
 	import controller.commands.toolController.NextControl;
 	import controller.commands.toolController.ReturnControl;
@@ -89,6 +95,7 @@ package
 			registerCommand(CommandNames.START_MOVE_CANVAS, StartDragCanvas);
 			registerCommand(CommandNames.STOP_MOVE_CANVAS, StopDragCanvas);
 			registerCommand(CommandNames.BG_CHANGE_COLOR, ChangeBGColor);
+			registerCommand(CommandNames.RENDER_CANVAS, RenderCanvas);
 			///////////////////////////////////
 			///          元素控制命令
 			///////////////////////////////////
@@ -117,6 +124,14 @@ package
 			registerCommand(CommandNames.INSERT_IMAGE, InserImage);
 			registerCommand(CommandNames.NEXT_CONTROL, NextControl);
 			registerCommand(CommandNames.RETURN_CONTROL, ReturnControl);
+			registerCommand(CommandNames.IMPORT_FILE, ImportFile);
+			registerCommand(CommandNames.EXPORT_FILE, ExportFile);
+			///////////////////////////////////
+			///          样式控制命令
+			///////////////////////////////////
+			registerCommand(CommandNames.INIT_CANVAS_STYLE, InitStyles);
+			registerCommand(CommandNames.CHANGE_CANVAS_STYLE, ChangeStyle);
+			registerCommand(CommandNames.SET_STYLE, SetStyle);
 		}
 	}
 }

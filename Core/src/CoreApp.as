@@ -6,12 +6,17 @@ package
 	import controller.interfaceCommand.OtherController;
 	
 	import flash.display.Sprite;
+	import flash.events.Event;
 	import flash.geom.Point;
+	import flash.net.URLLoader;
+	import flash.net.URLRequest;
 	
 	import model.CanvasProxy;
 	import model.ProxyNames;
 	
 	import util.StageUtil;
+	import util.XMLConfigKit.XMLVOLib;
+	import util.XMLConfigKit.XMLVOMapper;
 	
 	import view.Canvas;
 	
@@ -54,6 +59,11 @@ package
 		 */
 		public var otherController:OtherController;
 		
+		/**
+		 * 加载配置文件器
+		 */
+		private var loadConfig:URLLoader;
+		
 		public function CoreApp()
 		{
 			super();
@@ -76,6 +86,8 @@ package
 		 */
 		private function init():void
 		{
+			initConfig();
+			
 			bg = new Sprite();
 			this.addChild(bg);
 
@@ -89,7 +101,44 @@ package
 			canvasController = new CanvasController(facade);
 			otherController = new OtherController(facade);
 			
+			
+			
 			canvas.addEventListener(CanvasEvent.CHANGE_BG_COLOR, renderBG, false, 0, true);
+		}
+		
+		/**
+		 * 初始化载入xml配置文件
+		 * 
+		 */
+		private function initConfig():void
+		{
+			var request:URLRequest = new URLRequest("Config.xml");
+			loadConfig =  new URLLoader();
+			loadConfig.load(request);
+			loadConfig.addEventListener(Event.COMPLETE, onCompleteLoadConfig);
+		}
+		
+		protected function onCompleteLoadConfig(event:Event):void
+		{
+			XMLVOLib.clearPartLib();
+			var config:XML = XML(event.target.data);
+			var configList:XMLList = config.child('elementStyle').children();
+			
+			for each (var item:XML in config.child('template').children())
+				XMLVOLib.registWholeXML(item.@id, item, item.name().toString());
+				
+			for (var i:int = 0; i < configList.length(); i++) 
+			{
+				for each (var temp:XML in configList[i].children())
+					XMLVOLib.registWholeXML(temp.@id, temp, temp.name().toString());
+			}
+			
+			for each (var item2:XML in config.child('styles').children())
+			{
+				XMLVOLib.registerPartXML(item2.@id, item2, item2.name().toString());
+			}
+			
+			canvasController.InitStyles(XMLVOLib.getXML('stylesDefault', 'default'));
 		}
 		
 		/**
@@ -166,7 +215,7 @@ package
 			bg.graphics.beginFill((facade.retrieveProxy(ProxyNames.CANVAS) as CanvasProxy).canvasColor, 1);
 			bg.graphics.drawRect(0, 0, stage.stageWidth, stage.stageHeight);
 			bg.graphics.endFill();
-			canvas.renderBG(stage.stageWidth, stage.stageHeight, (facade.retrieveProxy(ProxyNames.CANVAS) as CanvasProxy).canvasColor);
+//			canvas.renderBG(stage.stageWidth, stage.stageHeight, (facade.retrieveProxy(ProxyNames.CANVAS) as CanvasProxy).canvasColor);
 		}
 		
 	}

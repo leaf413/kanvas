@@ -650,7 +650,7 @@
 								locked="{(shapeVO as ShapeVO).isLock}"
 								includeInLayout="{shapeMapper.visible}" includeInLayout.stage="false"
 								BgSelect="shapeMapper_BgSelectHandler(event)" BorderSelect="shapeMapper_BorderSelectHandler(event)" SelectNone="shapeMapper_SelectNoneHandler(event)" lockMapper="shapeMapper_changeLockHandler(event)"
-								valueHeight="{shapeVO.height}" valueWidth="{shapeVO.width}" valueX="{shapeVO.position.x}" valueY="{shapeVO.position.y}" changeXYMapper="shapeMapper_changeXYHandler(event)" changeWHMaooer="shapeMapper_changeWHMaooerHandler(event)"
+								valueHeight="{shapeVO.height}" valueWidth="{shapeVO.width}" valueX="{shapeVO.x}" valueY="{shapeVO.y}" changeXYMapper="shapeMapper_changeXYHandler(event)" changeWHMaooer="shapeMapper_changeWHMaooerHandler(event)"
 								/>
 		<components:Spliter id="shapeMapperSpliter" 
 							visible="{shapeMapper.visible}" visible.stage="false"
@@ -660,7 +660,7 @@
 		<palette:ColorPalette id="shapeColor" columNum="7"
 							  visible="true" visible.stage="false" visible.image="false" visible.text="true" visible.connect="true" visible.line="true"
 							  includeInLayout="{shapeColor.visible}" includeInLayout.stage="false"
-							  colorValue="{(shapeVO as ShapeVO).color}" changeColor="shapeColor_changeColorHandler(event)"/>
+							  colorValue="{uint((shapeVO as ShapeVO).color)}" changeColor="shapeColor_changeColorHandler(event)"/>
 		<components:Spliter id="shapeColorSpliter" 
 							visible="{shapeColor.visible}" visible.stage="false"
 							includeInLayout="{shapeColor.visible}" includeInLayout.stage="false"/>
@@ -679,7 +679,7 @@
 								visible="false" visible.image="true" visible.stage="false"
 								locked="{(shapeVO as ShapeVO).isLock}" SelectNone="shapeMapper_SelectNoneHandler(event)" lockMapper="imageMapper_changeLockHandler(event)"
 								includeInLayout="{imageMapper.visible}" includeInLayout.stage="false"
-								valueHeight="{shapeVO.height}" valueWidth="{shapeVO.width}" valueX="{shapeVO.position.x}" valueY="{shapeVO.position.y}" changeXYMapper="imageMapper_changeXYHandler(event)" changeWHMaooer="imageMapper_changeWHMaooerHandler(event)"/>
+								valueHeight="{shapeVO.height}" valueWidth="{shapeVO.width}" valueX="{shapeVO.x}" valueY="{shapeVO.y}" changeXYMapper="imageMapper_changeXYHandler(event)" changeWHMaooer="imageMapper_changeWHMaooerHandler(event)"/>
 		<components:Spliter id="imageMapperSpliter" 
 							visible="{imageMapper.visible}" visible.stage="false"
 							includeInLayout="{imageMapper.visible}" includeInLayout.stage="false"/>

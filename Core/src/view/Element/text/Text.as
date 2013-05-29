@@ -16,6 +16,8 @@ package view.Element.text
 	import model.vo.ElementVO;
 	import model.vo.TextVO;
 	
+	import util.graphic.StyleManager;
+	
 	import view.Element.ElementBase;
 	
 	/**
@@ -84,7 +86,7 @@ package view.Element.text
 			labelField.autoSize = TextFieldAutoSize.LEFT;
 			labelField.multiline = true;
 			labelField.addEventListener(Event.CHANGE, upateLabelHandler, false, 0, true);
-			labelField.text = textVO.label;
+			labelField.text = textVO.text;
 			this.addChild(border);
 			this.addChild(labelField);
 			
@@ -213,12 +215,12 @@ package view.Element.text
 			var spaceString:String = labelField.text.slice(startIndex,endIndex);
 			if (spaceString == " ")
 			{
-				(vo as TextVO).label = labelField.text.slice(0,labelField.text.length - 4);
-				labelField.text = (vo as TextVO).label;
+				(vo as TextVO).text = labelField.text.slice(0,labelField.text.length - 4);
+				labelField.text = (vo as TextVO).text;
 			}
 			else
 			{
-				(vo as TextVO).label = labelField.text;
+				(vo as TextVO).text = labelField.text;
 			}
 			updateFontSize();
 		}
@@ -258,18 +260,19 @@ package view.Element.text
 		{
 			super.render();
 			this.alpha = vo.alpha;
-			
-			var textFormat:TextFormat = labelField.getTextFormat();
-			textFormat.color = (vo as TextVO).color;
-			textFormat.bold = (vo as TextVO).bold;
-			textFormat.align = (vo as TextVO).align;
-			textFormat.font = (vo as TextVO).font;
-			textFormat.size = (vo as TextVO).size;
-			textFormat.italic = (vo as TextVO).italic;
-			textFormat.underline = (vo as TextVO).underline;
-			labelField.text = (vo as TextVO).label;
-			labelField.defaultTextFormat = textFormat;
-			labelField.text = (vo as TextVO).label;
+//			StyleManager.setLabelUIText(this, (this.vo as TextVO));
+//			StyleManager.setShapeStyle(vo.style, graphics, vo);
+//			var textFormat:TextFormat = labelField.getTextFormat();
+//			textFormat.color = (vo as TextVO).color;
+//			textFormat.bold = (vo as TextVO).bold;
+//			textFormat.align = (vo as TextVO).align;
+//			textFormat.font = (vo as TextVO).font;
+//			textFormat.size = (vo as TextVO).size;
+//			textFormat.italic = (vo as TextVO).italic;
+//			textFormat.underline = (vo as TextVO).underline;
+			labelField.text = (vo as TextVO).text;
+			labelField.defaultTextFormat = (vo as TextVO).label.getTextFormat(this.vo as TextVO);
+			StyleManager.setEffects(this, (vo as TextVO).label);
 			updateFontSize();
 			changeRecord();
 		}

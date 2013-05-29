@@ -68,37 +68,34 @@ package util
 			TextVO;
 		}
 		
-		/**
-		 */		
+//		/**
+//		 */		
 		public static function getShapeVO(type:String):ElementVO
 		{
-			return ClassUtil.getObjectByClassPath(SHAPE_UI_MAP.shape.(@type == type).@voClassPath) as ShapeVO;
+			return ClassUtil.getObjectByClassPath(SHAPE_UI_MAP.shape.(@type == type).@voClassPath) as ElementVO;
 		}
 		
-		/**
-		 */		
-		public static function setShapeSize(shapeVO:ElementVO):void
-		{
-			var shapeXML:XMLList= SHPAE_SIZE_MAP.shape.(@type == shapeVO.type);
-			
-			shapeVO.width = shapeXML.@width;
-			shapeVO.height = shapeXML.@height;
-		}
+//		/**
+//		 */		
+//		public static function setShapeSize(shapeVO:ElementVO):void
+//		{
+//			var shapeXML:XMLList= SHPAE_SIZE_MAP.shape.(@type == shapeVO.type);
+//			
+//			shapeVO.width = shapeXML.@width;
+//			shapeVO.height = shapeXML.@height;
+//		}
 		
-		public static function setImageSize(shapeVO:ElementVO):void
-		{
-			shapeVO.width = 200;
-			shapeVO.height = 200;
-		}
+//		public static function setImageSize(shapeVO:ElementVO):void
+//		{
+//			shapeVO.width = 200;
+//			shapeVO.height = 200;
+//		}
 		
 		/**
 		 */		
 		public static function getShapeUI(shapeVO:ElementVO):ElementBase
 		{
-			if (shapeVO is TextVO)
-				return new Text(shapeVO);
-			else
-				return ClassUtil.getObjectByClassPath(SHAPE_UI_MAP.shape.(@type == shapeVO.type).@uiClassPath, shapeVO) as ElementBase;
+			return ClassUtil.getObjectByClassPath(SHAPE_UI_MAP.shape.(@type == shapeVO.type).@uiClassPath, shapeVO) as ElementBase;
 		}
 		
 		/**
@@ -120,45 +117,45 @@ package util
 													<shape type="doubleArrow" uiClassPath="view.Element.shapes.DoubleArrow" voClassPath="model.vo.ShapeVO"/>
 													<shape type="hexagon" uiClassPath="view.Element.shapes.Hexagon" voClassPath="model.vo.ShapeVO"/>
 												</shapes>
-		
-		/**
-		 */			
-		private static const SHPAE_SIZE_MAP:XML = <shapes>
-														<shape type="triangle" width="50" height="50" />
-														<shape type="rect" width="50" height="50"/>
-														<shape type="circle" width="50" height="50"/>
-														<shape type="polygon" width="50" height="50"/>
-														<shape type="star" width="50" height="50"/>
-								 						<shape type="text" width="10" height="20"/>
-														<shape type="connector" />
-														<shape type="group" />
-														<shape type="multiSelection" />
-														<shape type="trapezoidal" width="50" height="50"/>
-														<shape type="arrow" width="50" height="50"/>
-														<shape type="doubleArrow" width="50" height="50"/>
-														<shape type="hexagon" width="50" height="50"/>
-														<shape type="line" />
-													</shapes>
-		
-			
+//		
+//		/**
+//		 */			
+//		private static const SHPAE_SIZE_MAP:XML = <shapes>
+//														<shape type="triangle" width="50" height="50" />
+//														<shape type="rect" width="50" height="50"/>
+//														<shape type="circle" width="50" height="50"/>
+//														<shape type="polygon" width="50" height="50"/>
+//														<shape type="star" width="50" height="50"/>
+//								 						<shape type="text" width="10" height="20"/>
+//														<shape type="connector" />
+//														<shape type="group" />
+//														<shape type="multiSelection" />
+//														<shape type="trapezoidal" width="50" height="50"/>
+//														<shape type="arrow" width="50" height="50"/>
+//														<shape type="doubleArrow" width="50" height="50"/>
+//														<shape type="hexagon" width="50" height="50"/>
+//														<shape type="line" />
+//													</shapes>
+//		
+//			
 		/**
 		 */		
 		public static var propertiesMap:XML = <shapes>
-												<rect x="" y="" width="" height="" label="" color="" alpha="" lineAlpha="" thickness="" lineColor="" isLock="" rotation="" property=""/>
-												<circle x="" y="" width="" height="" label="" color="" alpha="" lineAlpha="" thickness="" lineColor="" isLock="" rotation="" property=""/>
-												<star x="" y="" width="" height="" label="" color="" alpha="" lineAlpha="" thickness="" lineColor="" isLock="" rotation="" property=""/>
-												<polygon x="" y="" width="" height="" label="" color="" alpha="" lineAlpha="" thickness="" lineColor="" isLock="" rotation="" property=""/>
-												<text x="" y="" width="" height="" label="" color="" wordWrap="" font="" size="" align="" alpha="" bold="" italic="" thickness="" underline="" property=""/>
-												<triangle x="" y="" width="" height="" label="" color="" alpha="" lineAlpha="" thickness="" lineColor="" isLock="" rotation="" property=""/>
-												<connector startX="" startY="" endX="" endY="" startShapeID="" endShapeID="" color="" lineAlpha="" thickness="" lineColor="" property=""/>
-												<image x="" y="" width="" height="" label="" alpha="" isLock="" rotation="" property=""/>
-												<group x="" y="" width="" height="" label="" color="" alpha=""/>
-												<tempGroup x="" y="" width="" height="" label="" color="" alpha=""/>
-												<trapezoidal x="" y="" width="" height="" label="" color="" alpha="" lineAlpha="" thickness="" lineColor="" isLock="" rotation="" property=""/>
-												<arrow x="" y="" width="" height="" label="" color="" alpha="" lineAlpha="" thickness="" lineColor="" isLock="" rotation="" property=""/>
-												<doubleArrow x="" y="" width="" height="" label="" color="" alpha="" lineAlpha="" thickness="" lineColor="" isLock="" rotation="" property=""/>
-												<hexagon x="" y="" width="" height="" label="" color="" alpha="" lineAlpha="" thickness="" lineColor="" isLock="" rotation="" property=""/>
-												<line startX="" startY="" endX="" endY="" startArrow="" endArrow="" label="" color="" alpha="" lineAlpha="" thickness="" lineColor="" property=""/>
+												<rect id="" x="" y="" width="" height="" label="" color="" property="" styleTempType=""/>
+												<circle id=""  x="" y="" width="" height="" label="" color=""  property="" styleTempType=""/>
+												<star id=""  x="" y="" width="" height="" label="" color=""   property="" styleTempType=""/>
+												<polygon id=""  x="" y="" width="" height="" label="" color=""  property="" styleTempType=""/>
+												<text id=""  x="" y="" width="" height="" text=""  color=""  size=""  property="" styleTempType=""/>
+												<triangle id=""  x="" y="" width="" height="" label="" color="" property="" styleTempType=""/>
+												<connector id=""  startX="" startY="" endX="" endY="" startShapeID="" endShapeID="" color=""  thickness="" property="" styleTempType=""/>
+												<image id=""  x="" y="" width="" height="" label="" property="" bitmapID=""  styleTempType=""/>
+												<group id=""  x="" y="" width="" height="" label="" color="" styleTempType=""/>
+												<tempGroup id=""  x="" y="" width="" height="" styleTempType=""/>
+												<trapezoidal id=""  x="" y="" width="" height="" label="" color="" property="" styleTempType=""/>
+												<arrow id=""  x="" y="" width="" height="" label="" color="" property="" styleTempType=""/>
+												<doubleArrow id=""  x="" y="" width="" height="" label="" color=""  property="" styleTempType=""/>
+												<hexagon id=""  x="" y="" width="" height="" label="" color=""   property="" styleTempType=""/>
+												<line  id="" startX="" startY="" endX="" endY="" label="" color=""  thickness="" property="" styleTempType=""/>
 											</shapes>
 				
 			

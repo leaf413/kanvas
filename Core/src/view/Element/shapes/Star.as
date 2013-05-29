@@ -2,6 +2,8 @@ package view.Element.shapes
 {
 	import model.vo.ShapeVO;
 	
+	import util.graphic.StyleManager;
+	
 	/**
 	 * 星星
 	 * @author foxm
@@ -23,7 +25,6 @@ package view.Element.shapes
 			
 			var radio:Number = .5;
 			
-			frame.graphics.lineStyle((vo as ShapeVO).thickness, (vo as ShapeVO).frameColor, (vo as ShapeVO).frameAlpha);
 			var radiusX:Number = vo.width / 2 ;
 			var radiusY:Number = vo.height / 2 ;
 			var startX:Number = radiusX;
@@ -36,37 +37,30 @@ package view.Element.shapes
 			
 			var rad:Number;
 			var radPart:Number = Math.PI * 2 / 5;
-			
-			shape.graphics.moveTo(startX, startY - radiusY);
-			frame.graphics.moveTo(startX, startY - radiusY);
+			StyleManager.setShapeStyle(vo.style, graphics, vo);
+			graphics.moveTo(startX, startY - radiusY);
 			for (var i:uint = 1; i < 5; i ++)
 			{
 				// Inner.
 				rad = Math.PI / 2 - radPart / 2 + radPart * i;
 				outerStarX = startX + Math.cos(rad) * radiusX * radio;
 				outerStarY = startY - Math.sin(rad) * radiusY * radio;
-				shape.graphics.lineTo(outerStarX, outerStarY);
-				frame.graphics.lineTo(outerStarX, outerStarY);
+				graphics.lineTo(outerStarX, outerStarY);
 				// Outer
 				rad = Math.PI / 2 + radPart * i;
 				outerStarX = startX + Math.cos(rad) * radiusX;
 				outerStarY = startY - Math.sin(rad) * radiusY;
-				shape.graphics.lineTo(outerStarX, outerStarY);
-				frame.graphics.lineTo(outerStarX, outerStarY);
+				graphics.lineTo(outerStarX, outerStarY);
 			}
 			
 			rad = Math.PI / 2 - radPart / 2;
 			outerStarX = startX + Math.cos(rad) * radiusX * radio;
 			outerStarY = startY - Math.sin(rad) * radiusY * radio;
 			
-			shape.graphics.lineTo(outerStarX, outerStarY);
-			shape.graphics.lineTo(startX, startY - radiusY);
-			shape.graphics.endFill();
-			
-			
-			frame.graphics.lineTo(outerStarX, outerStarY);
-			frame.graphics.lineTo(startX, startY - radiusY);
-			frame.graphics.endFill();
+			graphics.lineTo(outerStarX, outerStarY);
+			graphics.lineTo(startX, startY - radiusY);
+			graphics.endFill();
+			StyleManager.setEffects(this, vo.style); 
 		}
 	}
 }

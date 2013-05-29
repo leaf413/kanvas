@@ -29,10 +29,10 @@ package view
 	 */
 	public class Canvas extends Sprite
 	{
-		/**
-		 * 背景
-		 */
-		private var bg:Sprite;
+//		/**
+//		 * 背景
+//		 */
+//		private var bg:Sprite;
 		
 		/**
 		 * 内容边界
@@ -192,22 +192,22 @@ package view
 				dispatchEvent(new ElementEvent(ElementEvent.UNSELECT_ELEMENT));
 		}
 		
-		/**
-		 * 渲染背景
-		 */
-		public function renderBG(w:Number = 0, h:Number = 0, color:uint = 0xffffff):void
-		{
-			if (!bg)
-			{
-				bg = new Sprite();
-				this.addChild(bg);
-			}
-				
-			bg.graphics.clear();
-			bg.graphics.beginFill(color, 1);
-			bg.graphics.drawRect(0, 0, w, h);
-			bg.graphics.endFill();
-		}
+//		/**
+//		 * 渲染背景
+//		 */
+//		public function renderBG(w:Number = 0, h:Number = 0, color:uint = 0xffffff):void
+//		{
+//			if (!bg)
+//			{
+//				bg = new Sprite();
+//				this.addChild(bg);
+//			}
+//				
+//			bg.graphics.clear();
+//			bg.graphics.beginFill(color, 1);
+//			bg.graphics.drawRect(0, 0, w, h);
+//			bg.graphics.endFill();
+//		}
 		
 		/**
 		 * 添加元素

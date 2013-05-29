@@ -2,6 +2,8 @@ package view.Element.shapes
 {
 	import model.vo.ShapeVO;
 	
+	import util.graphic.StyleManager;
+	
 	/**
 	 * 箭头形状
 	 * @author foxm
@@ -21,26 +23,18 @@ package view.Element.shapes
 		{
 			super.render();
 			
-			shape.graphics.moveTo(0, vo.height / 4);
-			shape.graphics.lineTo(vo.width / 2, vo.height / 4);
-			shape.graphics.lineTo(vo.width / 2, 0);
-			shape.graphics.lineTo(vo.width, vo.height / 2);
-			shape.graphics.lineTo(vo.width / 2, vo.height);
-			shape.graphics.lineTo(vo.width / 2, vo.height * 3 / 4);
-			shape.graphics.lineTo(0, vo.height * 3 / 4);
-			shape.graphics.lineTo(0, vo.height / 4);
-			shape.graphics.endFill();
+			StyleManager.setShapeStyle(vo.style, graphics, vo);
+			graphics.moveTo(0, vo.height / 4);
+			graphics.lineTo(vo.width / 2, vo.height / 4);
+			graphics.lineTo(vo.width / 2, 0);
+			graphics.lineTo(vo.width, vo.height / 2);
+			graphics.lineTo(vo.width / 2, vo.height);
+			graphics.lineTo(vo.width / 2, vo.height * 3 / 4);
+			graphics.lineTo(0, vo.height * 3 / 4);
+			graphics.lineTo(0, vo.height / 4);
+			graphics.endFill();
+			StyleManager.setEffects(this, vo.style); 
 			
-			frame.graphics.lineStyle((vo as ShapeVO).thickness, (vo as ShapeVO).frameColor, (vo as ShapeVO).frameAlpha);
-			frame.graphics.moveTo(0, vo.height / 4);
-			frame.graphics.lineTo(vo.width / 2, vo.height / 4);
-			frame.graphics.lineTo(vo.width / 2, 0);
-			frame.graphics.lineTo(vo.width, vo.height / 2);
-			frame.graphics.lineTo(vo.width / 2, vo.height);
-			frame.graphics.lineTo(vo.width / 2, vo.height * 3 / 4);
-			frame.graphics.lineTo(0, vo.height * 3 / 4);
-			frame.graphics.lineTo(0, vo.height / 4);
-			frame.graphics.endFill();
 		}
 	}
 }

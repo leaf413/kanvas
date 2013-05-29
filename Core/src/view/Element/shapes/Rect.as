@@ -1,6 +1,8 @@
 package view.Element.shapes
 {
 	import model.vo.ShapeVO;
+	
+	import util.graphic.StyleManager;
 
 	/**
 	 * 矩形
@@ -19,13 +21,10 @@ package view.Element.shapes
 		override public function render():void
 		{
 			super.render();
-			
-			shape.graphics.drawRoundRect(0, 0,vo.width , vo.height , 10, 10);
-			shape.graphics.endFill();
-			
-			frame.graphics.lineStyle((vo as ShapeVO).thickness, (vo as ShapeVO).frameColor, (vo as ShapeVO).frameAlpha);
-			frame.graphics.drawRoundRect(0, 0,vo.width , vo.height , 10, 10);
-			frame.graphics.endFill();
+			StyleManager.setShapeStyle(vo.style, graphics, vo);
+			graphics.drawRoundRect(0, 0,vo.width , vo.height , 10, 10);
+			graphics.endFill();
+			StyleManager.setEffects(this, vo.style); 
 		}
 	}
 }

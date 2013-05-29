@@ -4,6 +4,8 @@ package view.Element.images
 	
 	import model.vo.ImageVO;
 	
+	import util.graphic.StyleManager;
+	
 	/**
 	 * 图片
 	 * @author foxm
@@ -27,6 +29,8 @@ package view.Element.images
 			this.addChild(bitmap);
 			this.width = vo.width;
 			this.height = vo.height;
+			StyleManager.setEffects(this, vo.style); 
+			
 		}
 	}
 }

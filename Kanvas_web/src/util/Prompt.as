@@ -12,8 +12,8 @@ package util
 	
 	import org.osmf.events.TimeEvent;
 	
-	import util.colorManage.ColorFillVO;
-	import util.colorManage.ColorManager;
+//	import util.colorManage.ColorFillVO;
+//	import util.colorManage.ColorManager;
 //	import util.tween.TweenLite;
 	
 	/**
@@ -301,29 +301,29 @@ package util
 			_survivalPeriod = value;
 		}
 		
-		private static function getColorFill(color:uint, 
-											 hightColorRadio:Number = 1.3, 
-											 lowColorRadio:Number = 1.0,
-											 borderRadio:Number = .9,
-											 width:Number = 0,
-											 height:Number = 0):ColorFillVO
-		{
-			var colorStyle:ColorFillVO = new ColorFillVO();
-			colorStyle.fillAngle = Math.PI / 2;
-			colorStyle.fillColors = [ColorManager.transformColor(color, hightColorRadio, hightColorRadio, hightColorRadio), 
-				ColorManager.transformColor(color, lowColorRadio, lowColorRadio, lowColorRadio)];
-			
-			colorStyle.borderColor = ColorManager.transformColor(color, borderRadio, borderRadio, borderRadio);
-			colorStyle.borderAlpha = 1;
-			colorStyle.borderThikness = 1;
-			
-			colorStyle.width = width;
-			colorStyle.height = height;
-			
-			colorStyle.tx = 0;
-			colorStyle.ty = 0;
-			
-			return colorStyle;
-		}
+//		private static function getColorFill(color:uint, 
+//											 hightColorRadio:Number = 1.3, 
+//											 lowColorRadio:Number = 1.0,
+//											 borderRadio:Number = .9,
+//											 width:Number = 0,
+//											 height:Number = 0):ColorFillVO
+//		{
+//			var colorStyle:ColorFillVO = new ColorFillVO();
+//			colorStyle.fillAngle = Math.PI / 2;
+//			colorStyle.fillColors = [ColorManager.transformColor(color, hightColorRadio, hightColorRadio, hightColorRadio), 
+//				ColorManager.transformColor(color, lowColorRadio, lowColorRadio, lowColorRadio)];
+//			
+//			colorStyle.borderColor = ColorManager.transformColor(color, borderRadio, borderRadio, borderRadio);
+//			colorStyle.borderAlpha = 1;
+//			colorStyle.borderThikness = 1;
+//			
+//			colorStyle.width = width;
+//			colorStyle.height = height;
+//			
+//			colorStyle.tx = 0;
+//			colorStyle.ty = 0;
+//			
+//			return colorStyle;
+//		}
 	}
 }

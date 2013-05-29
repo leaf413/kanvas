@@ -2,6 +2,9 @@ package view.Element.shapes
 {
 	import model.vo.ShapeVO;
 	
+	import util.XMLConfigKit.XMLVOMapper;
+	import util.graphic.StyleManager;
+	
 	/**
 	 * 圆形
 	 * @author foxm
@@ -21,12 +24,12 @@ package view.Element.shapes
 		{
 			super.render();
 			
-			shape.graphics.drawEllipse(0,0,vo.width,vo.height);
-			shape.graphics.endFill();
+			StyleManager.setShapeStyle(vo.style, graphics, vo);
+			graphics.drawEllipse(0, 0, vo.width, vo.height);
+			graphics.endFill();
+			StyleManager.setEffects(this, vo.style); 
 			
-			frame.graphics.lineStyle((vo as ShapeVO).thickness, (vo as ShapeVO).frameColor, (vo as ShapeVO).frameAlpha);
-			frame.graphics.drawEllipse(0,0,vo.width,vo.height);
-			frame.graphics.endFill();
 		}
+		
 	}
 }

@@ -38,5 +38,15 @@ package controller.commands.canvasController
 			canvasProxy.canvasColor = notification.getBody() as uint;
 			canvasMediator.changeBGColor();
 		}
+		
+		override public function returnHandler():void
+		{
+//			canvasMediator.canvas.setChildIndexElement(element, oldIndex);
+		}
+		
+		override public function nextHandler():void
+		{
+//			canvasMediator.canvas.setChildIndexElement(element, newIndex);
+		}
 	}
 }

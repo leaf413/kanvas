@@ -1,4 +1,4 @@
-﻿package util.system 
+﻿package util.system
 {
 	import flash.net.LocalConnection;
 	

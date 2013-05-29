@@ -11,6 +11,7 @@ package controller.commands.ElementController.creatAndDelete
 	
 	import util.ShapeCreator;
 	import util.ShapeVORecord;
+	import util.XMLConfigKit.XMLVOMapper;
 	import util.type.ElementTypes;
 	
 	import view.CanvasMediator;
@@ -52,8 +53,10 @@ package controller.commands.ElementController.creatAndDelete
 				line = new Line(notification.getBody() as LineVO);
 				line.vo.type = ElementTypes.LINE;
 				line.vo.id = ShapeCreator.shapeID;
-				(line.vo as LineVO).color = shapeVORecor.color;
-				line.vo.alpha = shapeVORecor.alpha;
+				line.vo.styleTempType = canvasProxy.style.currentlineStyle.name().toString();
+				XMLVOMapper.fuck(canvasProxy.style.currentlineStyle, line.vo);
+//				(line.vo as LineVO).color = shapeVORecor.color;
+//				line.vo.alpha = shapeVORecor.alpha;
 				
 				canvasProxy.addElement(line.vo);
 				canvasMediator.addElement(line);
@@ -64,8 +67,8 @@ package controller.commands.ElementController.creatAndDelete
 				line = notification.getBody() as Line;
 				line.vo.type = ElementTypes.LINE;
 				line.vo.id = ShapeCreator.shapeID;
-				(line.vo as LineVO).color = shapeVORecor.color;
-				line.vo.alpha = shapeVORecor.alpha;
+//				(line.vo as LineVO).color = shapeVORecor.color;
+//				line.vo.alpha = shapeVORecor.alpha;
 				
 				canvasProxy.addElement(line.vo);
 				canvasMediator.addElement(line);

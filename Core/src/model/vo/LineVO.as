@@ -14,13 +14,17 @@ package model.vo
 		/**
 		 * 开始点
 		 */
-		public var startPoint:Point;
+		public var startX:Number;
+		
+		public var startY:Number;
+		
 		
 		/**
 		 * 结束点
 		 */
-		public var endPoint:Point;
+		public var endX:Number;
 		
+		public var endY:Number;
 		/**
 		 * 标题
 		 */
@@ -34,7 +38,7 @@ package model.vo
 		/**
 		 * 内填充颜色
 		 */
-		private var _color:uint = 0x728F1C;
+		private var _color:Object = 0x728F1C;
 		
 		/**
 		 * 开始点箭头
@@ -75,7 +79,7 @@ package model.vo
 		 * 设置线条颜色
 		 * @param value
 		 */
-		public function set color(value:uint):void 
+		public function set color(value:Object):void 
 		{
 			_color = value;
 		}
@@ -84,7 +88,7 @@ package model.vo
 		 * 获取线条颜色
 		 * @return 
 		 */
-		public function get color():uint 
+		public function get color():Object 
 		{
 			return _color;
 		}

@@ -2,6 +2,8 @@ package view.Element.shapes
 {
 	import model.vo.ShapeVO;
 	
+	import util.graphic.StyleManager;
+	
 	/**
 	 * 六边形
 	 * @author foxm
@@ -22,24 +24,16 @@ package view.Element.shapes
 			super.render();
 			
 			var hw:Number = (vo.height / 2) * Math.sqrt(3) /3.5;
-			shape.graphics.moveTo(0, vo.height / 2);
-			shape.graphics.lineTo(hw,0);
-			shape.graphics.lineTo(vo.width - hw, 0);
-			shape.graphics.lineTo(vo.width, vo.height / 2);
-			shape.graphics.lineTo(vo.width - hw, vo.height);
-			shape.graphics.lineTo(hw, vo.height);
-			shape.graphics.lineTo(0, vo.height / 2);
-			shape.graphics.endFill();
-			
-			frame.graphics.lineStyle((vo as ShapeVO).thickness, (vo as ShapeVO).frameColor, (vo as ShapeVO).frameAlpha);
-			frame.graphics.moveTo(0, vo.height / 2);
-			frame.graphics.lineTo(hw,0);
-			frame.graphics.lineTo(vo.width - hw, 0);
-			frame.graphics.lineTo(vo.width, vo.height / 2);
-			frame.graphics.lineTo(vo.width - hw, vo.height);
-			frame.graphics.lineTo(hw, vo.height);
-			frame.graphics.lineTo(0, vo.height / 2);
-			frame.graphics.endFill();
+			StyleManager.setShapeStyle(vo.style, graphics, vo);
+			graphics.moveTo(0, vo.height / 2);
+			graphics.lineTo(hw,0);
+			graphics.lineTo(vo.width - hw, 0);
+			graphics.lineTo(vo.width, vo.height / 2);
+			graphics.lineTo(vo.width - hw, vo.height);
+			graphics.lineTo(hw, vo.height);
+			graphics.lineTo(0, vo.height / 2);
+			graphics.endFill();
+			StyleManager.setEffects(this, vo.style, vo); 
 		}
 	}
 }

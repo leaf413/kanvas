@@ -211,6 +211,26 @@ package controller.commands
 		 */
 		public static const CREATE_TEXT:String = "createText";
 		
+		/**
+		 * 设置元素样式
+		 */
+		public static const SET_STYLE:String = "setStyle";
+		
+		/**
+		 * 初始化整体样式
+		 */
+		public static const INIT_CANVAS_STYLE:String = "initCanvasStyle";
+		
+		/**
+		 * 改变整体样式
+		 */
+		public static const CHANGE_CANVAS_STYLE:String = 'changeCanvasStyle';
+		
+		/**
+		 * 渲染整体
+		 */
+		public static const RENDER_CANVAS:String = 'renderCanvas';
+		
 		
 		
 		public function CommandNames()
